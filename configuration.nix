@@ -3,7 +3,10 @@
 { self, ... }:
 
 {
-# macOS defaults
+# Allow installation of unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # macOS defaults
   system.defaults = {
     dock.autohide = true;
     dock.mru-spaces = false;
