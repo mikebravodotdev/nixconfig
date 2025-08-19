@@ -7,6 +7,7 @@
   environment.systemPackages = [
     pkgs.firefox
     pkgs.firefox-devedition
+    pkgs.google-chrome
     pkgs.zed-editor
     pkgs.vscode
     pkgs.audacity
