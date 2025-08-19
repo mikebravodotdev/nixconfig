@@ -6,7 +6,7 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    # Optional: Declarative tap management
+    # Declarative tap management
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -21,8 +21,8 @@
   {
     darwinConfigurations."Hermes" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      specialArgs = { inherit self; };
-      # CORRECTED: The modules list is now a clean list of files/imports
+      specialArgs = { inherit (inputs) self homebrew-core homebrew-cask; };
+
       modules = [
         nix-homebrew.darwinModules.nix-homebrew # The module itself
         ./configuration.nix

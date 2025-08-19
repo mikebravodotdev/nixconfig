@@ -1,6 +1,6 @@
 # homebrew.nix
 
-{ ... }:
+{ homebrew-core, homebrew-cask,... }:
 {
   nix-homebrew = {
     # Install Homebrew under the default prefix
@@ -10,7 +10,7 @@
     enableRosetta = true;
 
     # User owning the Homebrew prefix
-    user = "yourname";
+    user = "mikebravo";
 
     # Automatically migrate existing Homebrew installations
     autoMigrate = true;
