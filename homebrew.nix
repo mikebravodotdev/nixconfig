@@ -35,6 +35,21 @@
       "signal"
       "signal@beta"
       "session"
+      "twist"
+      "obs"
+      "jami"
+      "ghostty"
+      "libreoffice"
+      "proton-pass"
+      "proton-drive"
+      "proton-mail"
+      "proton-mail-bridge"
+      "protonvpn"
+      "jitsi-meet"
+      "font-fira-code"
+      "font-fira-code-nerd-font"
+      "font-hack"
+      "font-hack-nerd-font"
     ];
   };
 }
