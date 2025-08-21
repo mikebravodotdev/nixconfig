@@ -15,6 +15,8 @@
     loginwindow.LoginwindowText = "The way is shut. It was made by those who are dead, and the Dead keep it, until the time comes. The way is shut.";
     screencapture.location = "/Users/mikebravo/Library/Mobile\ Documents/com~apple~CloudDocs/Screenshots";
     screensaver.askForPasswordDelay = 10;
+    #trackpad.TrackpadThreeFingerDrag = true;
+    #NSGlobalDomain."com.apple.trackpad.scaling" = 3;
   };
 
   # Enable Touch ID for sudo
