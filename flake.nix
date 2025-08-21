@@ -28,6 +28,8 @@
         ./configuration.nix
         ./packages.nix
         ./applications.nix
+        ./NSGlobalDomain.nix # Global configurations
+        ./trackpad.nix # My custom trackpad settings
         ./homebrew.nix  # Your new homebrew configuration file
       ];
     };
