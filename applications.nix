@@ -21,5 +21,6 @@
     pkgs.slack
     pkgs.telegram-desktop
     pkgs.utm
+    # pkgs.standardnotes
   ];
 }
