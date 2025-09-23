@@ -14,5 +14,6 @@
     pkgs.go
     pkgs.rustc
     pkgs.cargo
+    pkgs.fish
   ];
 }
