@@ -18,6 +18,7 @@
     taps = [
       "homebrew/homebrew-core"
       "homebrew/homebrew-cask"
+      "dart-lang/dart"
     ];
 
     # Optional: Enable fully-declarative tap management
@@ -53,6 +54,8 @@
       "todoist"
       "standard-notes"
       "balenaetcher"
+      "lm-studio"
+      "dart"
     ];
   };
 }

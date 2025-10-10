@@ -5,8 +5,8 @@
 {
   # List all packages you want to install globally.
   environment.systemPackages = [
-    pkgs.lmstudio
-    pkgs.firefox
+    # pkgs.lmstudio
+    # pkgs.firefox
     pkgs.firefox-devedition
     pkgs.google-chrome
     pkgs.zed-editor

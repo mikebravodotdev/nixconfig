@@ -12,8 +12,10 @@
     pkgs.wget
     pkgs.dotnet-sdk
     pkgs.go
+    # pkgs.dart
     pkgs.rustc
     pkgs.cargo
     pkgs.fish
+    pkgs.nodejs
   ];
 }
