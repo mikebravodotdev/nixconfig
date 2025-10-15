@@ -51,11 +51,11 @@
       "font-fira-code-nerd-font"
       "font-hack"
       "font-hack-nerd-font"
-      "todoist"
       "standard-notes"
       "balenaetcher"
       "lm-studio"
       "dart"
+      "dotnet-sdk"
     ];
   };
 }

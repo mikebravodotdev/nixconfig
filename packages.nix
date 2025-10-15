@@ -10,7 +10,7 @@
     pkgs.git
     pkgs.curl
     pkgs.wget
-    pkgs.dotnet-sdk
+    # pkgs.dotnet-sdk
     pkgs.go
     # pkgs.dart
     pkgs.rustc
