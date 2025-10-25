@@ -27,9 +27,9 @@
         nix-homebrew.darwinModules.nix-homebrew # The module itself
         ./configuration.nix
         ./packages.nix
-        ./applications.nix
-        #./NSGlobalDomain.nix # Global configurations
-        #./trackpad.nix # My custom trackpad settings
+        # ./applications.nix
+        # ./NSGlobalDomain.nix # Global configurations
+        # ./trackpad.nix # My custom trackpad settings
         ./homebrew.nix  # Your new homebrew configuration file
       ];
     };

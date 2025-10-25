@@ -10,12 +10,12 @@
     pkgs.git
     pkgs.curl
     pkgs.wget
-    # pkgs.dotnet-sdk
     pkgs.go
-    # pkgs.dart
     pkgs.rustc
     pkgs.cargo
     pkgs.fish
     pkgs.nodejs
+    pkgs.starship
+    pkgs.eza
   ];
 }
