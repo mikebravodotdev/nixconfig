@@ -32,7 +32,20 @@ nix.settings = {
   nix.settings.experimental-features = "nix-command flakes";
 
 # Enable programs and set default shell
-  programs.bash.enable = true;
+
+# Declaratively create /etc/bashrc.local for shell startup commands
+  environment.etc."bashrc.local" = {
+    text = ''
+      # Initialize Starship Prompt
+      eval "$(starship init bash)"
+
+      # Aliases for eza
+      alias ls="eza --icons"
+      alias ll="eza -l --icons"
+      alias la="eza -la --icons"
+      alias lt="eza --tree --level=2 --icons"
+    '';
+  };
   users.users.mikebravo.shell = pkgs.bash;
 
 # System settings
