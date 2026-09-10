@@ -32,6 +32,7 @@ nix.settings = {
   nix.settings.experimental-features = "nix-command flakes";
 
 # Enable programs and set default shell
+  environment.shells = [ "/run/current-system/sw/bin/bash" ];
 
 # Declaratively create /etc/bashrc.local for shell startup commands
   environment.etc."bashrc.local" = {

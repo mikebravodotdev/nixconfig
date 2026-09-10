@@ -4,17 +4,13 @@
 {
   homebrew = {
     enable = true;
+    onActivation.cleanup = "zap";   # or "uninstall";
     user = "mikebravo";
-
-    # Taps (third-party repositories)
-    taps = [
-      "homebrew/homebrew-core"
-      "homebrew/homebrew-cask"
-    ];
 
     # Formulas (command-line applications)
     brews = [
       "dart-sdk"
+      "brew-gem"
     ];
 
     # Casks (GUI Applications, Fonts, etc.)
@@ -24,6 +20,9 @@
       "google-chrome@dev"
       "librewolf"
       "firefox@developer-edition"
+      "firefox"
+      "brave-browser"
+      "microsoft-edge"
       "ungoogled-chromium"
 
       # Communication
@@ -38,16 +37,17 @@
       "twist"
 
       # Development & Terminals
-      "balenaetcher"
+      # "balenaetcher"
       "ghostty"
-      "iterm2"
-      "lapce"
+      # "iterm2"
+      # "lapce"
       "lm-studio"
       "podman-desktop"
       "utm"
       "visual-studio-code"
-      "wezterm"
+      # "wezterm"
       "zed"
+      "coderunner"
 
       # Productivity
       "audacity"
@@ -55,15 +55,31 @@
       "logseq"
       "obs"
       "vlc"
-      "standard-notes"
-      "todoist"
+      "rectangle"
+      "alfred"
+      "appcleaner"
+      "betterdisplay"
+      "dropbox"
+      "google-drive"
+      "logi-options+"
+      "microsoft-office-businesspro"
+      # "standard-notes"
+      # "todoist"
+
+      # AI
+      "google-gemini"
+      "grok-bot"
+
+      # Security
+      "1password"
+      "1password-cli"
 
       # Proton Suite
-      "proton-drive"
-      "proton-mail"
-      "proton-mail-bridge"
-      "proton-pass"
-      "protonvpn"
+      # "proton-drive"
+      # "proton-mail"
+      # "proton-mail-bridge"
+      # "proton-pass"
+      # "protonvpn"
 
       # Fonts
       "font-fira-code"
