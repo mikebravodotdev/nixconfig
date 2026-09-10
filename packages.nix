@@ -27,5 +27,13 @@
     pkgs.sqlite
     pkgs.mas
     pkgs.lua
+
+    # For the Omarchy-ported bash config (bashrc.local.sh)
+    pkgs.zoxide
+    pkgs.fzf
+    pkgs.bat
+    pkgs.mise
+    pkgs.gum
+    pkgs.tmux
   ];
 }

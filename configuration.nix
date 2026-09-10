@@ -35,18 +35,10 @@ nix.settings = {
   environment.shells = [ "/run/current-system/sw/bin/bash" ];
 
 # Declaratively create /etc/bashrc.local for shell startup commands
-  environment.etc."bashrc.local" = {
-    text = ''
-      # Initialize Starship Prompt
-      eval "$(starship init bash)"
-
-      # Aliases for eza
-      alias ls="eza --icons"
-      alias ll="eza -l --icons"
-      alias la="eza -la --icons"
-      alias lt="eza --tree --level=2 --icons"
-    '';
-  };
+# (Omarchy-inspired setup — see bashrc.local.sh in this repo)
+  environment.etc."bashrc.local".text = builtins.readFile ./bashrc.local.sh;
+  environment.etc."starship.toml".text = builtins.readFile ./starship.toml;
+  environment.etc."inputrc.omarchy".text = builtins.readFile ./inputrc;
   users.users.mikebravo.shell = pkgs.bash;
 
 # System settings
