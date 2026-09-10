@@ -34,9 +34,11 @@ nix.settings = {
 # Enable programs and set default shell
   environment.shells = [ "/run/current-system/sw/bin/bash" ];
 
-# Declaratively create /etc/bashrc.local for shell startup commands
+# Declaratively create /etc/bash.local for shell startup commands
 # (Omarchy-inspired setup — see bashrc.local.sh in this repo)
-  environment.etc."bashrc.local".text = builtins.readFile ./bashrc.local.sh;
+# NB: nix-darwin's generated /etc/bashrc sources /etc/bash.local specifically —
+# it must be named exactly that, not "bashrc.local", or it's silently never sourced.
+  environment.etc."bash.local".text = builtins.readFile ./bashrc.local.sh;
   environment.etc."starship.toml".text = builtins.readFile ./starship.toml;
   environment.etc."inputrc.omarchy".text = builtins.readFile ./inputrc;
   users.users.mikebravo.shell = pkgs.bash;
