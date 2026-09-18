@@ -63,17 +63,22 @@
       "google-drive"
       "logi-options+"
       "microsoft-office-businesspro"
+      "adobe-acrobat-reader"
       # "standard-notes"
       # "todoist"
 
       # AI
       "google-gemini"
       "grok-bot"
+      "claude"
+      "claude-code"
 
       # Security
       "1password"
       "1password-cli"
 
+      #System Tools
+      "daisydisk"
       # Proton Suite
       # "proton-drive"
       # "proton-mail"

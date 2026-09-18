@@ -42,6 +42,7 @@ nix.settings = {
   environment.etc."starship.toml".text = builtins.readFile ./starship.toml;
   environment.etc."inputrc.omarchy".text = builtins.readFile ./inputrc;
   users.users.mikebravo.shell = pkgs.bash;
+  users.users.mikebravo.home = "/Users/mikebravo";
 
 # System settings
   system.configurationRevision = self.rev or self.dirtyRev or null;

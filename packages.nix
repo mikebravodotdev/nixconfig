@@ -17,6 +17,7 @@
     pkgs.nodejs
     pkgs.starship
     pkgs.eza
+    pkgs.powershell
 
     # Moved from Homebrew so they're declared instead of dangling installs
     pkgs.coreutils
