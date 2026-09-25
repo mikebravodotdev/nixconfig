@@ -7,6 +7,10 @@
     onActivation.cleanup = "zap";   # or "uninstall";
     user = "mikebravo";
 
+    taps = [
+      "nikitabobko/tap"
+    ];
+
     # Formulas (command-line applications)
     brews = [
       "dart-sdk"
@@ -79,6 +83,8 @@
 
       #System Tools
       "daisydisk"
+      "carbon-copy-cloner"
+      "nikitabobko/tap/aerospace"
       # Proton Suite
       # "proton-drive"
       # "proton-mail"
