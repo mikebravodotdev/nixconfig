@@ -54,7 +54,7 @@
   {
     darwinConfigurations = {
       "Hermes" = mkDarwinSystem { };
-      "Familys-Mini" = mkDarwinSystem { };
+      "myMacmini" = mkDarwinSystem { };
     };
   };
 }
