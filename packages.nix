@@ -12,6 +12,7 @@
     pkgs.wget
     pkgs.go
     pkgs.rustc
+    pkgs.jdk
     pkgs.cargo
     pkgs.fish
     pkgs.nodejs
