@@ -45,6 +45,7 @@
       "podman-desktop"
       "utm"
       "visual-studio-code"
+      "openvpn-connect"
       # "wezterm"
       "zed"
       "coderunner"

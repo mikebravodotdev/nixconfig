@@ -16,4 +16,17 @@
   home.stateVersion = "24.11";
 
   programs.home-manager.enable = true;
+
+  # Ghostty itself is installed via the Homebrew cask (see homebrew.nix);
+  # home-manager only manages its config (~/.config/ghostty/config).
+  # The font comes from the "font-hack-nerd-font" cask.
+  programs.ghostty = {
+    enable = true;
+    package = null;
+    settings = {
+      background = "000000";
+      foreground = "FFDA03";
+      font-family = "Hack Nerd Font";
+    };
+  };
 }
