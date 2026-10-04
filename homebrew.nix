@@ -85,7 +85,7 @@
       #System Tools
       "daisydisk"
       "carbon-copy-cloner"
-      "nikitabobko/tap/aerospace"
+      "vorssaint"
       # Proton Suite
       # "proton-drive"
       # "proton-mail"
