@@ -66,7 +66,7 @@
       "betterdisplay"
       "dropbox"
       "google-drive"
-      "logi-options+"
+      "openlogi"
       "microsoft-office-businesspro"
       "adobe-acrobat-reader"
       # "standard-notes"
