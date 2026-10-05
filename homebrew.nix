@@ -75,6 +75,7 @@
       "grok-bot"
       "claude"
       "claude-code"
+      "perplexity"
 
       # Security
       "1password"
