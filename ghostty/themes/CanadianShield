@@ -1,0 +1,40 @@
+# Canadian Shield OLED
+# True-black background for Tandem OLED (pixels fully off); warm earth-tone text
+# inspired by autumn boreal forest: spruce, lichen, birch bark, maple, tamarack gold,
+# and cold Shield lakes.
+
+background = #000000
+foreground = #d8cfbc
+
+cursor-color = #e0a73f
+cursor-text = #000000
+
+selection-background = #2e2418
+selection-foreground = #f0e6d0
+
+split-divider-color = #2a241d
+
+# black / bright black (granite, shadowed rock)
+palette = 0=#1a1613
+palette = 8=#6e6458
+# red / bright red (red maple, rust)
+palette = 1=#b5482f
+palette = 9=#dd6a45
+# green / bright green (moss, lichen)
+palette = 2=#7d8f4e
+palette = 10=#a1b56b
+# yellow / bright yellow (tamarack & aspen gold)
+palette = 3=#d9a441
+palette = 11=#f0c35e
+# blue / bright blue (Shield lake water)
+palette = 4=#5d8a9c
+palette = 12=#82b3c7
+# magenta / bright magenta (fireweed, cranberry)
+palette = 5=#a0586b
+palette = 13=#c67f91
+# cyan / bright cyan (spruce teal, glacial meltwater)
+palette = 6=#5f9c8a
+palette = 14=#88c4b0
+# white / bright white (birch bark, bone)
+palette = 7=#c9bfae
+palette = 15=#efe6d2
