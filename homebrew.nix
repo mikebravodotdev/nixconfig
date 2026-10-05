@@ -7,9 +7,7 @@
     onActivation.cleanup = "zap";   # or "uninstall";
     user = "mikebravo";
 
-    taps = [
-      "nikitabobko/tap"
-    ];
+    taps = [ ];
 
     # Formulas (command-line applications)
     brews = [
