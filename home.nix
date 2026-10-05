@@ -24,9 +24,11 @@
     enable = true;
     package = null;
     settings = {
-      background = "000000";
-      foreground = "FFDA03";
+      theme = "CanadianShield";
       font-family = "Hack Nerd Font";
     };
   };
+
+  # Custom Ghostty theme, installed to ~/.config/ghostty/themes/.
+  xdg.configFile."ghostty/themes/CanadianShield".source = ./ghostty/themes/CanadianShield;
 }
