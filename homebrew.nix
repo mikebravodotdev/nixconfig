@@ -83,7 +83,7 @@
 
       #System Tools
       "daisydisk"
-      "carbon-copy-cloner"
+      # "carbon-copy-cloner"
       "vorssaint"
       # Proton Suite
       # "proton-drive"
