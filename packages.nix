@@ -16,6 +16,7 @@
     pkgs.cargo
     pkgs.fish
     pkgs.nodejs
+    pkgs.dotnet-sdk
     pkgs.starship
     pkgs.eza
     pkgs.powershell
