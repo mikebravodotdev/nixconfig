@@ -1,6 +1,6 @@
 # packages.nix
 
-{ pkgs, ... }:
+{ pkgs, cliamp, ... }:
 
 {
   # List all packages you want to install globally.
@@ -37,5 +37,10 @@
     pkgs.mise
     pkgs.gum
     pkgs.tmux
+
+    # cliamp terminal music player (flake input) + optional runtime deps
+    cliamp.packages.${pkgs.stdenv.hostPlatform.system}.default
+    pkgs.ffmpeg
+    pkgs.yt-dlp
   ];
 }

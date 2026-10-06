@@ -21,16 +21,17 @@
     home-manager.url = "github:nix-community/home-manager/master";
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    cliamp.url = "github:bjarneo/cliamp";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim, cliamp }:
   let
     # Same config for every machine right now — add per-host modules to a
     # given entry below if/when a machine needs to diverge (e.g. a
     # different architecture or a trimmed Homebrew cask list).
     mkDarwinSystem = { system ? "aarch64-darwin" }: nix-darwin.lib.darwinSystem {
       inherit system;
-      specialArgs = { inherit (inputs) self homebrew-core homebrew-cask; };
+      specialArgs = { inherit (inputs) self homebrew-core homebrew-cask cliamp; };
 
       modules = [
         nix-homebrew.darwinModules.nix-homebrew # The module itself
