@@ -28,6 +28,7 @@
       "ungoogled-chromium"
 
       # Communication
+      "keybase"
       "element"
       "jami"
       "jitsi-meet"
