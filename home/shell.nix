@@ -10,13 +10,18 @@
     enable = true;
 
     # Runs before the non-interactive early return in ~/.bashrc.
-    # Fedora's stock ~/.bashrc sources /etc/bashrc (which pulls in
-    # /etc/profile.d/*, including Nix's own PATH setup) — keep doing that now
-    # that home-manager owns ~/.bashrc.
+    # Keep what Fedora's stock ~/.bashrc did, now that home-manager owns it:
+    # source /etc/bashrc (which pulls in /etc/profile.d/*, including Nix's own
+    # PATH setup) and put ~/.local/bin and ~/bin on PATH.
     bashrcExtra = lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
       if [ -f /etc/bashrc ]; then
         . /etc/bashrc
       fi
+
+      if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+        PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+      fi
+      export PATH
     '';
 
     initExtra = builtins.readFile ../dotfiles/bashrc.sh;
