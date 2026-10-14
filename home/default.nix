@@ -34,6 +34,7 @@ in
     settings = {
       theme = "CanadianShield";
       font-family = "Hack Nerd Font";
+      quit-after-last-window-closed = false;
     };
   };
 
