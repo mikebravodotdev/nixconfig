@@ -16,6 +16,19 @@
     # Fonts (on macOS these come from Homebrew casks)
     fonts.fontconfig.enable = true;
 
+    # Flatpak: for GUI apps with no nixpkgs package and no squashfs AppImage.
+    services.flatpak = {
+      enable = true;
+      remotes = lib.mkOptionDefault [
+        { name = "flathub"; location = "https://flathub.org/repo/flathub.flatpakrepo"; }
+      ];
+      packages = [
+        # ProtonPlus only ships a DwarFS-packed AppImage, which nixpkgs'
+        # appimageTools can't extract (squashfs only).
+        "com.vysp3r.ProtonPlus"
+      ];
+    };
+
     home.packages = [
       pkgs.nerd-fonts.hack
       pkgs.nerd-fonts.fira-code
