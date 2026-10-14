@@ -22,9 +22,13 @@
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     cliamp.url = "github:bjarneo/cliamp";
+    # Declarative Flatpak installs, for Linux GUI apps with no nixpkgs
+    # package and no squashfs AppImage (e.g. ProtonPlus, which only ships a
+    # DwarFS-packed AppImage that nixpkgs' appimageTools can't extract).
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim, cliamp }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim, cliamp, nix-flatpak }:
   let
     username = "mikebravo";
 
@@ -66,7 +70,7 @@
         config.allowUnfree = true;
       };
       extraSpecialArgs = homeSpecialArgs;
-      modules = [ ./home ];
+      modules = [ nix-flatpak.homeManagerModules.nix-flatpak ./home ];
     };
   in
   {

@@ -38,5 +38,25 @@
     "version": "1.14.4",
     "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.4/Obsidian-1.14.4.AppImage",
     "hash": "sha256-Y2Ldvu7rt7vMtI+uAJVyzyKE75L1yRnBMyq6SN5v/qo="
+  },
+  "lmstudio-bionic": {
+    "version": "1.1.8-10",
+    "url": "https://bionic-installers.lmstudio.ai/linux/x64/1.1.8-10/Bionic-1.1.8-10-x64.AppImage",
+    "hash": "sha256-g1xIXoNGwLOroY2el5UkqGJXvfXMpImughaSgxKlgAE="
+  },
+  "kate": {
+    "version": "master-12634",
+    "url": "https://cdn.kde.org/ci-builds/utilities/kate/master/linux/kate-master-12634-linux-gcc-x86_64.AppImage",
+    "hash": "sha256-UvgjYjZpC/9PxisZ53JtpiOeV5nd54MnPRfDx8XzUG4="
+  },
+  "onlyoffice": {
+    "version": "9.4.0",
+    "url": "https://github.com/ONLYOFFICE/appimage-desktopeditors/releases/download/v9.4.0/DesktopEditors-x86_64.AppImage",
+    "hash": "sha256-9fryRVJmUmL+lEhqUQuZfS5aJL3hTflMgCx5vxf5JUw="
+  },
+  "0ad": {
+    "version": "0.28.0",
+    "url": "https://releases.wildfiregames.com/0ad-0.28.0-x86_64.AppImage",
+    "hash": "sha256-hp3YWty04Ct9yPdoU6IAA7HFDjKPxDs6EjNvM1cK3Rg="
   }
 }
