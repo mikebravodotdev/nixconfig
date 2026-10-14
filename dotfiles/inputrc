@@ -1,5 +1,5 @@
-# Managed by nix-darwin via configuration.nix — edit inputrc in the
-# nixconfig repo, not /etc/inputrc.omarchy directly.
+# Managed by home-manager via home/shell.nix — edit dotfiles/inputrc in the
+# nixconfig repo, not ~/.config/readline/omarchy.inputrc directly.
 #
 # Ported verbatim from Omarchy (https://omarchy.org) default/bash/inputrc.
 

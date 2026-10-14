@@ -1,11 +1,13 @@
-# homebrew.nix
-{ homebrew-core, homebrew-cask,... }:
+# darwin/homebrew.nix
+# macOS-only. Linux equivalents of these casks live in ../home/linux.nix
+# (nixpkgs) and ../home/appimages where a Linux build exists.
+{ homebrew-core, homebrew-cask, username, ... }:
 
 {
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";   # or "uninstall";
-    user = "mikebravo";
+    user = username;
 
     taps = [ ];
 

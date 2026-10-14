@@ -3,7 +3,7 @@
 # LazyVim's own lazy.nvim (git-based) plugin manager. Not a literal port of
 # LazyVim's Lua config — same idea (LSP, treesitter, fuzzy-find, file tree,
 # modern statusline/bufferline, formatting-on-save), reproduced through Nix
-# so `darwin-rebuild switch` fully provisions it, no separate git clone step.
+# so `darwin-rebuild switch` / `home-manager switch` fully provisions it, no separate git clone step.
 
 { pkgs, ... }:
 

@@ -1,5 +1,5 @@
-# Managed by nix-darwin via configuration.nix — edit starship.toml in the
-# nixconfig repo, not /etc/starship.toml directly.
+# Managed by home-manager via home/shell.nix — edit dotfiles/starship.toml in
+# the nixconfig repo, not ~/.config/starship.toml directly.
 #
 # Ported verbatim from Omarchy (https://omarchy.org) config/starship.toml.
 
