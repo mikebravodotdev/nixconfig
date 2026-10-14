@@ -1,6 +1,8 @@
-# configuration.nix
+# darwin/configuration.nix
+# macOS system layer (nix-darwin). Everything user-level and cross-platform
+# — packages, shell, editor, dotfiles — lives in ../home instead.
 
-{ self, pkgs,... }:
+{ self, pkgs, username, ... }:
 
 {
 # Allow installation of unfree packages
@@ -13,7 +15,7 @@
     #finder.AppleShowAllExtensions = true;
     finder.FXPreferredViewStyle = "clmv";
     loginwindow.LoginwindowText = "The way is shut. It was made by those who are dead, and the Dead keep it, until the time comes. The way is shut.";
-    screencapture.location = "/Users/mikebravo/Library/Mobile\ Documents/com~apple~CloudDocs/Screenshots";
+    screencapture.location = "/Users/${username}/Library/Mobile\ Documents/com~apple~CloudDocs/Screenshots";
     screensaver.askForPasswordDelay = 10;
     #trackpad.TrackpadThreeFingerDrag = true;
     #NSGlobalDomain."com.apple.trackpad.scaling" = 3;
@@ -31,22 +33,17 @@ nix.settings = {
 # Flakes settings
   nix.settings.experimental-features = "nix-command flakes";
 
-# Enable programs and set default shell
+# Make Nix's bash the login shell (macOS defaults to zsh). The bash config
+# itself is managed by home-manager — see ../home/shell.nix.
   environment.shells = [ "/run/current-system/sw/bin/bash" ];
-
-# Declaratively create /etc/bash.local for shell startup commands
-# (Omarchy-inspired setup — see bashrc.local.sh in this repo)
-# NB: nix-darwin's generated /etc/bashrc sources /etc/bash.local specifically —
-# it must be named exactly that, not "bashrc.local", or it's silently never sourced.
-  environment.etc."bash.local".text = builtins.readFile ./bashrc.local.sh;
-  environment.etc."starship.toml".text = builtins.readFile ./starship.toml;
-  environment.etc."inputrc.omarchy".text = builtins.readFile ./inputrc;
-  users.users.mikebravo.shell = pkgs.bash;
-  users.users.mikebravo.home = "/Users/mikebravo";
+  environment.systemPackages = [ pkgs.bash ];
+  users.users.${username} = {
+    shell = pkgs.bash;
+    home = "/Users/${username}";
+  };
 
 # System settings
   system.configurationRevision = self.rev or self.dirtyRev or null;
   system.stateVersion = 6;
-  nixpkgs.hostPlatform = "aarch64-darwin";
-  system.primaryUser = "mikebravo";
+  system.primaryUser = username;
 }

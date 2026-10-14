@@ -1,10 +1,11 @@
-# Managed by nix-darwin via configuration.nix — edit bashrc.local.sh in the
-# nixconfig repo, not this generated file directly.
+# Managed by home-manager via home/shell.nix (appended to ~/.bashrc) — edit
+# dotfiles/bashrc.sh in the nixconfig repo, not ~/.bashrc directly.
+# Shared by macOS and Linux, so stick to tools that behave the same on both
+# (GNU coreutils is on PATH on both — see home/packages.nix).
 #
 # Ported from Omarchy (https://omarchy.org) default/bash/* configuration,
-# adapted for macOS/Homebrew+Nix instead of Arch/pacman. Skipped: anything
-# Linux-only (drive formatting, the xdg-open wrapper — macOS already has a
-# native `open`) or tied to Omarchy's own `omarchy` CLI dispatcher.
+# adapted for Nix instead of Arch/pacman. Skipped: drive formatting, the
+# xdg-open wrapper, and anything tied to Omarchy's own `omarchy` CLI dispatcher.
 
 # --- Environment ---
 export EDITOR="nvim"
@@ -12,7 +13,6 @@ export SUDO_EDITOR="$EDITOR"
 export BAT_THEME=ansi
 export MANROFFOPT="-c"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-export STARSHIP_CONFIG=/etc/starship.toml
 
 # --- History ---
 shopt -s histappend
@@ -40,7 +40,9 @@ fi
 sff() {
   if [ $# -eq 0 ]; then echo "Usage: sff <destination> (e.g. sff host:/tmp/)"; return 1; fi
   local file
-  file=$(find . -type f -exec stat -f '%m%t%N' {} \; | sort -rn | cut -f2- | ff) && [ -n "$file" ] && scp "$file" "$1"
+  # GNU stat syntax: coreutils is on PATH on macOS too (home/packages.nix),
+  # shadowing BSD stat, so `stat -f` would mean "filesystem status" there.
+  file=$(find . -type f -exec stat -c $'%Y\t%n' {} + | sort -rn | cut -f2- | ff) && [ -n "$file" ] && scp "$file" "$1"
 }
 
 if command -v zoxide &> /dev/null; then
@@ -128,8 +130,8 @@ dip() {
   done
 }
 
-# Note: macOS's BSD pgrep has no -a flag (Linux procps-only); -fl is the
-# closest equivalent (match full command line, print pid + command name).
+# Note: macOS's BSD pgrep has no -a flag (Linux procps-only); -fl works on
+# both (match full command line, print pid + command name).
 lip() {
   pgrep -fl "ssh.*-L [0-9]+:localhost:[0-9]+" || echo "No active forwards"
 }
@@ -250,10 +252,12 @@ if command -v fzf &> /dev/null; then
 fi
 
 # --- Readline tweaks ---
-if [[ $- == *i* ]] && [[ -f /etc/inputrc.omarchy ]]; then
-  bind -f /etc/inputrc.omarchy
+_omarchy_inputrc="${XDG_CONFIG_HOME:-$HOME/.config}/readline/omarchy.inputrc"
+if [[ $- == *i* ]] && [[ -f $_omarchy_inputrc ]]; then
+  bind -f "$_omarchy_inputrc"
 fi
+unset _omarchy_inputrc
 
-# Add your own exports, aliases, and functions in a separate ~/.bashrc.local2
-# (or just extend this file in the nixconfig repo) — don't edit /etc/bashrc.local
-# directly, it gets regenerated on every darwin-rebuild switch.
+# Extend this file in the nixconfig repo rather than editing ~/.bashrc — it's a
+# read-only Nix store symlink, regenerated on every darwin-rebuild /
+# home-manager switch.
