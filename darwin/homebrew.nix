@@ -60,6 +60,7 @@
       "libreoffice"
       "logseq"
       "obs"
+      "obsidian"
       "vlc"
       "rectangle"
       "alfred"

@@ -22,6 +22,7 @@ latest_url() {
     audacity)           gh_latest audacity/audacity 'x86_64\.AppImage$' ;;
     logseq)             gh_latest logseq/logseq 'x86_64.*\.AppImage$' ;;
     lmstudio)           curl -fsSL -o /dev/null -w '%{url_effective}' https://lmstudio.ai/download/latest/linux/x64 ;;
+    obsidian)           gh_latest obsidianmd/obsidian-releases '^Obsidian-[0-9.]+\.AppImage$' ;;
     *) echo "unknown AppImage: $1" >&2; return 1 ;;
   esac
 }

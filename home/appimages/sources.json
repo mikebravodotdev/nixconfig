@@ -33,5 +33,10 @@
     "version": "0.4.26-4",
     "url": "https://installers.lmstudio.ai/linux/x64/0.4.26-4/LM-Studio-0.4.26-4-x64.AppImage",
     "hash": "sha256-LGKjipOtA8pdqu8ogEiAvhZ1Zng/+vwXPOLhyxC3VS4="
+  },
+  "obsidian": {
+    "version": "1.14.4",
+    "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.4/Obsidian-1.14.4.AppImage",
+    "hash": "sha256-Y2Ldvu7rt7vMtI+uAJVyzyKE75L1yRnBMyq6SN5v/qo="
   }
 }
