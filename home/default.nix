@@ -36,11 +36,15 @@ in
       font-family = "Hack Nerd Font";
       quit-after-last-window-closed = false;
     };
-    # home-manager's default systemd unit declares Type=notify-reload, but
-    # the nixpkgs ghostty build isn't linked against libsystemd, so it never
-    # acks a reload. Every `home-manager switch` that touches this config
-    # fires the unit's X-Reload-Triggers, systemd waits for an ack that never
-    # comes, times out, and kills Ghostty. Plain process launch avoids it.
+    # home-manager's default systemd unit uses Type=notify-reload, and every
+    # `home-manager switch` that touches this config fires its
+    # X-Reload-Triggers, sending Ghostty SIGUSR2. Ghostty installs its
+    # SIGUSR2 handler late (after it's already told systemd READY=1), so the
+    # reload races and systemd kills the service instead of reloading it:
+    # https://github.com/ghostty-org/ghostty/issues/14398 (fixed upstream in
+    # PR #14399, merged 2026-09-25, but not in any tagged release yet — the
+    # nixpkgs build is still v1.3.1, from before the fix). Revisit once
+    # nixpkgs picks up a release with that fix.
     systemd.enable = false;
   };
 
