@@ -81,7 +81,7 @@
 
     # `home-manager switch --flake .` picks "<user>@<hostname>" automatically.
     homeConfigurations = {
-      "${username}@ares" = mkHome { };
+      "${username}@bigGuy" = mkHome { };
     };
   };
 }

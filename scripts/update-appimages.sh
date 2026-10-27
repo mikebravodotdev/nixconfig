@@ -24,10 +24,6 @@ latest_url() {
     lmstudio)           curl -fsSL -o /dev/null -w '%{url_effective}' https://lmstudio.ai/download/latest/linux/x64 ;;
     lmstudio-bionic)    curl -fsSL -o /dev/null -w '%{url_effective}' https://lmstudio.ai/download/bionic/latest/linux/x64 ;;
     obsidian)           gh_latest obsidianmd/obsidian-releases '^Obsidian-[0-9.]+\.AppImage$' ;;
-    kate)
-      base=https://cdn.kde.org/ci-builds/utilities/kate/master/linux/
-      file=$(curl -fsSL "$base" | grep -oE 'href="[^"]*-linux-gcc-x86_64\.AppImage"' | sed -E 's/href="(.*)"/\1/' | sort -V | tail -1)
-      echo "$base$file" ;;
     onlyoffice)         gh_latest ONLYOFFICE/appimage-desktopeditors 'DesktopEditors-x86_64\.AppImage$' ;;
     0ad)
       base=https://releases.wildfiregames.com/
@@ -42,7 +38,6 @@ latest_url() {
 # instead bake the version into the filename itself.
 latest_version() {
   case $1 in
-    kate)        basename "$2" | sed -E 's/^kate-master-([0-9]+)-.*/master-\1/' ;;
     0ad)         basename "$2" | sed -E 's/^0ad-([0-9.]+)-x86_64\.AppImage$/\1/' ;;
     *)
       tag=${2%/*}; tag=${tag##*/}
