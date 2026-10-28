@@ -24,6 +24,8 @@ in
 
   programs.home-manager.enable = true;
 
+  home.sessionPath = [ "$HOME/.local/bin" ];
+
   # On macOS, Ghostty itself is installed via the Homebrew cask (see
   # ../darwin/homebrew.nix) and the font via the "font-hack-nerd-font" cask;
   # home-manager only manages its config (~/.config/ghostty/config).
