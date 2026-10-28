@@ -58,6 +58,8 @@
           # Move aside any pre-existing ~/.bashrc etc. instead of refusing to activate.
           home-manager.backupFileExtension = "hm-backup";
           home-manager.extraSpecialArgs = homeSpecialArgs;
+          # home/linux.nix sets services.flatpak, so the option must exist here too.
+          home-manager.sharedModules = [ nix-flatpak.homeManagerModules.nix-flatpak ];
           home-manager.users.${username} = import ./home;
         }
       ];
