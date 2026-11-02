@@ -72,9 +72,10 @@
     # Not managed here:
     # - 1Password / 1password-cli, Keybase: install from the vendor's own apt
     #   repo — browser integration, polkit and FUSE need system-level installs.
+    # - Claude desktop: installed from apt on bigGuy (claude-desktop).
     # - No Linux build: UTM, CodeRunner, Rectangle, Alfred, AppCleaner,
     #   BetterDisplay, DaisyDisk, Office, Acrobat Reader, Google Drive,
-    #   Claude desktop, Perplexity, Gemini, Grok, Twist, Vorssaint, OpenLogi.
+    #   Perplexity, Gemini, Grok, Twist, Vorssaint, OpenLogi.
     #   OpenVPN Connect → use openvpn3 from OpenVPN's apt repo.
   };
 }
