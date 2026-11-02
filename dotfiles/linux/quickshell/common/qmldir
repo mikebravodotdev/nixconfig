@@ -1,0 +1,5 @@
+singleton Theme Theme.qml
+singleton SystemActions SystemActions.qml
+singleton Panels Panels.qml
+singleton NotificationHistory NotificationHistory.qml
+singleton Battery Battery.qml

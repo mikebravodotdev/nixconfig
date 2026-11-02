@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Screenshot / OCR / record helper built on grim, slurp, wl-clipboard,
+# tesseract and wf-recorder. Usage: hypr-screenshot {region|screen|window|ocr|record}
+set -euo pipefail
+
+dir="${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots"
+mkdir -p "$dir"
+stamp="$(date +%Y-%m-%d_%H-%M-%S)"
+file="$dir/screenshot_$stamp.png"
+
+notify() { command -v notify-send >/dev/null && notify-send "$@" || true; }
+
+# Pick a window on a visible workspace with slurp (hover and click a window).
+pick_window() {
+  local active
+  active="$(hyprctl -j monitors | jq '[.[].activeWorkspace.id]')"
+  hyprctl -j clients \
+    | jq -r --argjson ws "$active" '.[] | select(.mapped and (.workspace.id as $w | $ws | index($w))) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' \
+    | slurp -r
+}
+
+case "${1:-region}" in
+  region)
+    geom="$(slurp -d)" || exit 0
+    grim -g "$geom" "$file"
+    wl-copy < "$file"
+    notify "Screenshot" "Saved and copied: ${file##*/}"
+    ;;
+  screen)
+    grim "$file"
+    wl-copy < "$file"
+    notify "Screenshot" "Saved and copied: ${file##*/}"
+    ;;
+  window)
+    geom="$(pick_window)" || exit 0
+    grim -g "$geom" "$file"
+    wl-copy < "$file"
+    notify "Screenshot" "Saved and copied: ${file##*/}"
+    ;;
+  ocr)
+    geom="$(slurp -d)" || exit 0
+    text="$(grim -g "$geom" - | tesseract stdin stdout 2>/dev/null)"
+    printf '%s' "$text" | wl-copy
+    notify "OCR" "Copied $(printf '%s' "$text" | wc -w) words"
+    ;;
+  record)
+    if pgrep -x wf-recorder >/dev/null; then
+      pkill -INT -x wf-recorder
+      notify "Recording" "Stopped"
+    else
+      out="${XDG_VIDEOS_DIR:-$HOME/Videos}/recording_$stamp.mp4"
+      mkdir -p "$(dirname "$out")"
+      geom="$(slurp -d)" || exit 0
+      notify "Recording" "Started (press Alt+Print to stop)"
+      exec wf-recorder -g "$geom" -f "$out"
+    fi
+    ;;
+  *)
+    echo "usage: ${0##*/} {region|screen|window|ocr|record}" >&2
+    exit 2
+    ;;
+esac
