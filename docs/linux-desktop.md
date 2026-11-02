@@ -121,6 +121,12 @@ take the lock over. This recovery path has not been exercised.
 Built and checked on this (desktop) machine, but not on real hardware or by
 hand: the battery widget against a real battery (only simulated), Bluetooth
 pairing, connecting to a Wi-Fi network, the lock screen's wrong-password
-animation, idle locking through hypridle, and the light themes. The Nix side
-(`home/desktop.nix`, the `omarchy` input) was written on a machine without Nix;
-see the commit message for what was and was not evaluated.
+animation, idle locking through hypridle, and the light themes.
+
+The Nix side was evaluated with Nix 2.23 (a static build, scratch store, no
+install) but never built or switched: the Linux home-manager config and the
+`Hermes` Mac config both evaluate, the Mac's managed-file list is identical to
+`master`'s, every link target and the generated `foot.ini` were inspected, and
+the themes build script was run against the real Omarchy source and produced
+the same 23 themes as the hand-made copy. Not covered: an actual
+`home-manager switch` on bigGuy, and building the Linux packages.
