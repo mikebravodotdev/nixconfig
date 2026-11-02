@@ -19,6 +19,7 @@ hl.config({
       natural_scroll       = false,
       clickfinger_behavior = true,
       scroll_factor        = 0.4,
+      drag_3fg             = 1,  -- three-finger drag (macOS-style)
     },
   },
 
@@ -28,9 +29,11 @@ hl.config({
   },
 })
 
--- Touchpad gestures (harmless on a desktop, useful if you add a laptop).
-hl.gesture({ fingers = 3, direction = "left",  action = function() hl.dispatch(hl.dsp.focus({ workspace = "r-1" })) end })
-hl.gesture({ fingers = 3, direction = "right", action = function() hl.dispatch(hl.dsp.focus({ workspace = "r+1" })) end })
-hl.gesture({ fingers = 4, direction = "left",  action = function() hl.dispatch(hl.dsp.window.move({ workspace = "r-1" })) end })
-hl.gesture({ fingers = 4, direction = "right", action = function() hl.dispatch(hl.dsp.window.move({ workspace = "r+1" })) end })
+-- Touchpad gestures. 3 fingers is reserved for drag (drag_3fg above), so
+-- workspace switching lives on 4 fingers.
+hl.gesture({ fingers = 4, direction = "left",  action = function() hl.dispatch(hl.dsp.focus({ workspace = "r-1" })) end })
+hl.gesture({ fingers = 4, direction = "right", action = function() hl.dispatch(hl.dsp.focus({ workspace = "r+1" })) end })
 hl.gesture({ fingers = 4, direction = "down",  action = "fullscreen" })
+
+-- Magic Trackpad: max pointer speed (range -1.0..1.0), scoped so mice are unaffected.
+hl.device({ name = "apple-inc.-magic-trackpad-2", sensitivity = 1.0 })
