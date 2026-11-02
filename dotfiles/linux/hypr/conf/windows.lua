@@ -64,3 +64,16 @@ rule({ tag = "noidle" }, { idle_inhibit = "always" })
 -- Shell overlays should pop in without compositor animation.
 hl.layer_rule({ match = { namespace = "selection" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "^(qs-launcher|qs-clipboard|qs-system-menu|qs-appearance|qs-wallpaper|qs-osd|qs-notifications|qs-bar)$" }, no_anim = true })
+
+-- xwaylandvideobridge (screen-share bridge for XWayland apps) maps a real window
+-- on login. Keep it alive but invisible, tiny, unfocusable, and off-screen.
+rule({ class = "^xwaylandvideobridge$" }, {
+  float = true,
+  size = { 1, 1 },
+  move = { "(monitor_w*2)", "(monitor_h*2)" },
+  opacity = "0.0 override 0.0 override",
+  no_anim = true,
+  no_blur = true,
+  no_focus = true,
+  no_initial_focus = true,
+})
