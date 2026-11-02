@@ -41,7 +41,6 @@
 
       # Homebrew brews / CLI casks on macOS
       pkgs.dart
-      pkgs.claude-code
 
       # GUI apps with no official AppImage. (Apps that do ship one are
       # pinned in ./appimages; Firefox and Chromium come from the distro.)
