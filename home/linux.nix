@@ -1,6 +1,7 @@
 # home/linux.nix
-# Linux-only (non-NixOS, e.g. Fedora) bits: desktop integration, fonts, and
-# GUI apps — the Linux counterpart to ../darwin/homebrew.nix.
+# Linux-only (non-NixOS: Debian 13 on bigGuy) bits: desktop integration, fonts,
+# and GUI apps — the Linux counterpart to ../darwin/homebrew.nix. The Hyprland
+# desktop itself (compositor, Quickshell, terminals, theming) is ./desktop.nix.
 
 { pkgs, lib, ... }:
 
@@ -35,7 +36,7 @@
       pkgs.hack-font
       pkgs.fira-code
 
-      # Needed for Neovim's clipboard = "unnamedplus" under Wayland (Plasma)
+      # Needed for Neovim's clipboard = "unnamedplus" under Wayland
       pkgs.wl-clipboard
 
       # Homebrew brews / CLI casks on macOS
@@ -43,7 +44,7 @@
       pkgs.claude-code
 
       # GUI apps with no official AppImage. (Apps that do ship one are
-      # pinned in ./appimages; Firefox ships with Fedora.)
+      # pinned in ./appimages; Firefox and Chromium come from the distro.)
       # Browsers
       pkgs.google-chrome
       pkgs.brave
@@ -69,11 +70,11 @@
     ];
 
     # Not managed here:
-    # - 1Password / 1password-cli, Keybase: install from their dnf repos —
-    #   browser integration, polkit and FUSE need system-level installs.
+    # - 1Password / 1password-cli, Keybase: install from the vendor's own apt
+    #   repo — browser integration, polkit and FUSE need system-level installs.
     # - No Linux build: UTM, CodeRunner, Rectangle, Alfred, AppCleaner,
     #   BetterDisplay, DaisyDisk, Office, Acrobat Reader, Google Drive,
     #   Claude desktop, Perplexity, Gemini, Grok, Twist, Vorssaint, OpenLogi.
-    #   OpenVPN Connect → use openvpn3 from dnf.
+    #   OpenVPN Connect → use openvpn3 from OpenVPN's apt repo.
   };
 }

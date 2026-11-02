@@ -14,6 +14,7 @@ in
     ./packages.nix
     ./shell.nix
     ./linux.nix
+    ./desktop.nix
   ];
 
   home.username = username;

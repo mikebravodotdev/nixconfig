@@ -26,14 +26,23 @@
     # package and no squashfs AppImage (e.g. ProtonPlus, which only ships a
     # DwarFS-packed AppImage that nixpkgs' appimageTools can't extract).
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+    # Omarchy's theme palettes and wallpapers (MIT), used by the Linux desktop's
+    # theme switcher (home/desktop.nix). Not a flake; pinned to the commit the
+    # themes were taken from so they don't shift under us. Only the Linux
+    # desktop module reads it, so evaluating the macOS configurations never
+    # fetches it (locking does, once).
+    omarchy = {
+      url = "github:omacom/omarchy/a69b19f64efa78143155f2f46c85e7e05a09e05f";
+      flake = false;
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim, cliamp, nix-flatpak }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim, cliamp, nix-flatpak, omarchy }:
   let
     username = "mikebravo";
 
     # Passed to every home-manager module, on both platforms.
-    homeSpecialArgs = { inherit nixvim cliamp username; };
+    homeSpecialArgs = { inherit nixvim cliamp username omarchy; };
 
     # macOS: nix-darwin owns the system layer (defaults, Homebrew, Touch ID)
     # and runs home-manager as a module for everything user-level.
@@ -65,7 +74,9 @@
       ];
     };
 
-    # Linux (non-NixOS, e.g. Fedora): standalone home-manager, no system layer.
+    # Linux (non-NixOS: Debian 13 on bigGuy): standalone home-manager, no system
+    # layer. The Hyprland desktop's packages come from apt; see
+    # docs/linux-desktop.md.
     mkHome = { system ? "x86_64-linux" }: home-manager.lib.homeManagerConfiguration {
       pkgs = import nixpkgs {
         inherit system;
