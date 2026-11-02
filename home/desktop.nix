@@ -83,6 +83,17 @@ in
         font=Hack Nerd Font Mono:size=13
       '';
 
+      # uwsm sources this for the whole graphical session. The greeter's login
+      # shell exports __ETC_PROFILE_NIX_SOURCED, which makes Nix's profile
+      # script skip itself afterwards, so `nix` never reached the session PATH.
+      "uwsm/env".text = ''
+        # Nix (multi-user daemon profile + the home-manager profile).
+        case ":$PATH:" in
+          *:/nix/var/nix/profiles/default/bin:*) ;;
+          *) export PATH="${config.home.profileDirectory}/bin:/nix/var/nix/profiles/default/bin:$PATH" ;;
+        esac
+      '';
+
       # Hack Nerd Font as the default monospace font for every app.
       "fontconfig/fonts.conf".source = ../dotfiles/linux/fontconfig/fonts.conf;
     };
