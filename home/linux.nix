@@ -30,6 +30,16 @@
       ];
     };
 
+    # Flatpak's portal/session-helper user units + D-Bus activation. Steam's
+    # Flatpak refuses to start without org.freedesktop.portal.Flatpak, which
+    # Debian would normally get from a host flatpak package.
+    systemd.user.packages = [ pkgs.flatpak ];
+
+    # The session bus doesn't scan ~/.nix-profile/share/dbus-1/services, only
+    # XDG_DATA_HOME, so link the activation file there.
+    xdg.dataFile."dbus-1/services/org.freedesktop.portal.Flatpak.service".source =
+      "${pkgs.flatpak}/share/dbus-1/services/org.freedesktop.portal.Flatpak.service";
+
     home.packages = [
       # On PATH so exported Flatpak .desktop entries (`flatpak run …`) launch;
       # Debian has no host flatpak. Same package nix-flatpak installs apps with.
