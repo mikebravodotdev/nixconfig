@@ -31,6 +31,10 @@
     };
 
     home.packages = [
+      # On PATH so exported Flatpak .desktop entries (`flatpak run …`) launch;
+      # Debian has no host flatpak. Same package nix-flatpak installs apps with.
+      pkgs.flatpak
+
       pkgs.nerd-fonts.hack
       pkgs.nerd-fonts.fira-code
       pkgs.hack-font
