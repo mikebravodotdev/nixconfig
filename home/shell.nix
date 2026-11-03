@@ -25,6 +25,10 @@
         PATH="$HOME/.local/bin:$HOME/bin:$PATH"
       fi
       export PATH
+
+      # Point docker-compose / Docker clients at rootless podman's API socket
+      # (enable with: systemctl --user enable --now podman.socket).
+      export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
     '';
 
     initExtra = builtins.readFile ../dotfiles/bashrc.sh;
