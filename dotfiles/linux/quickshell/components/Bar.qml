@@ -19,6 +19,9 @@ PanelWindow {
   implicitHeight: Theme.barHeight
   color: Theme.bg
 
+  // Bar text size, scaled like the panels.
+  readonly property int fs: Theme.s(Theme.fontSize)
+
   // ------------------------------------------------------------ state
   readonly property var monitor: Hyprland.monitorFor(bar.screen)
   readonly property int activeWs: monitor && monitor.activeWorkspace ? monitor.activeWorkspace.id : 1
@@ -131,14 +134,14 @@ PanelWindow {
           readonly property bool active: bar.activeWs === wsId
           readonly property bool occupied: bar.wsExists(wsId)
           visible: active || occupied || wsId <= 5
-          width: 30; height: 26
+          width: Theme.s(30); height: Theme.s(26)
           color: active ? Theme.accent : "transparent"
 
           Text {
             anchors.centerIn: parent
             text: parent.wsId === 10 ? "0" : parent.wsId
             color: parent.active ? Theme.onAccent : (parent.occupied ? Theme.fg : Theme.fgDim)
-            font { family: Theme.font; pixelSize: Theme.fontSize; bold: parent.active }
+            font { family: Theme.font; pixelSize: bar.fs; bold: parent.active }
           }
           MouseArea {
             anchors.fill: parent
@@ -155,7 +158,7 @@ PanelWindow {
       Text {
         id: clock
         color: Theme.fg
-        font { family: Theme.font; pixelSize: Theme.fontSize }
+        font { family: Theme.font; pixelSize: bar.fs }
         text: Qt.formatDateTime(new Date(), "ddd d MMM  HH:mm")
         Timer {
           interval: 1000; running: true; repeat: true
@@ -164,10 +167,35 @@ PanelWindow {
       }
     }
 
-    // ---- right: media, stats, power, bluetooth, network, volume, tray
+    // ---- right: tray, media, stats, power, bluetooth, network, volume
     Row {
       anchors { right: parent.right; rightMargin: 8; verticalCenter: parent.verticalCenter }
       spacing: 4
+
+      // System tray (app indicators: Steam, screen sharing, ...) sits leftmost,
+      // before the system indicators.
+      Row {
+        spacing: 8
+        anchors.verticalCenter: parent.verticalCenter
+        rightPadding: 6
+        Repeater {
+          model: SystemTray.items
+          delegate: Image {
+            required property var modelData
+            source: modelData.icon
+            width: Theme.s(18); height: Theme.s(18)
+            sourceSize: Qt.size(Theme.s(18), Theme.s(18))
+            MouseArea {
+              anchors.fill: parent
+              acceptedButtons: Qt.LeftButton | Qt.RightButton
+              onClicked: mouse => {
+                if (mouse.button === Qt.LeftButton) modelData.activate()
+                else if (modelData.hasMenu) modelData.display(bar, mapToItem(null, mouse.x, mouse.y).x, bar.height)
+              }
+            }
+          }
+        }
+      }
 
       // Now playing (first MPRIS player): click to play/pause
       BarButton {
@@ -179,7 +207,7 @@ PanelWindow {
           color: Theme.fgDim
           elide: Text.ElideRight
           width: Math.min(implicitWidth, 320)
-          font { family: Theme.font; pixelSize: Theme.fontSize }
+          font { family: Theme.font; pixelSize: bar.fs }
         }
       }
 
@@ -187,14 +215,14 @@ PanelWindow {
         Text {
           text: Theme.icon(0xF0EE0) + " " + bar.cpuPct + "%"
           color: bar.cpuPct > 85 ? Theme.urgent : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize }
+          font { family: Theme.font; pixelSize: bar.fs }
         }
       }
       BarButton {
         Text {
           text: Theme.icon(0xF035B) + " " + bar.memPct + "%"
           color: bar.memPct > 90 ? Theme.urgent : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize }
+          font { family: Theme.font; pixelSize: bar.fs }
         }
       }
 
@@ -204,7 +232,7 @@ PanelWindow {
         panel: "battery"
         BatteryIcon {
           anchors.verticalCenter: parent.verticalCenter
-          unit: 1.1
+          unit: 1.1 * Theme.uiScale
           fraction: Battery.barPercent / 100
           charging: Battery.barCharging
           color: Battery.low ? Theme.urgent : Battery.barCharging ? Theme.accent2 : Theme.fg
@@ -212,7 +240,7 @@ PanelWindow {
         Text {
           text: Battery.barPercent + "%"
           color: Battery.low ? Theme.urgent : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize }
+          font { family: Theme.font; pixelSize: bar.fs }
         }
       }
 
@@ -223,13 +251,13 @@ PanelWindow {
         Text {
           text: Theme.icon(NotificationHistory.dnd ? 0xF009B : 0xF009C)
           color: NotificationHistory.dnd ? Theme.fgDim : NotificationHistory.unread > 0 ? Theme.accent : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize + 1 }
+          font { family: Theme.font; pixelSize: bar.fs + 1 }
         }
         Text {
           visible: NotificationHistory.unread > 0
           text: NotificationHistory.unread
           color: Theme.accent
-          font { family: Theme.font; pixelSize: Theme.fontSize; bold: true }
+          font { family: Theme.font; pixelSize: bar.fs; bold: true }
         }
       }
 
@@ -239,7 +267,7 @@ PanelWindow {
         Text {
           text: Theme.icon(bar.profile === "performance" ? 0xF04C5 : bar.profile === "power-saver" ? 0xF032A : 0xF05D1)
           color: bar.profile === "performance" ? Theme.accent : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize + 1 }
+          font { family: Theme.font; pixelSize: bar.fs + 1 }
         }
       }
 
@@ -251,7 +279,7 @@ PanelWindow {
           readonly property bool on: ad !== null && ad.enabled
           text: Theme.icon(!on ? 0xF00B2 : bar.btConnected > 0 ? 0xF00B1 : 0xF00AF)
           color: !on ? Theme.fgDim : bar.btConnected > 0 ? Theme.accent : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize + 1 }
+          font { family: Theme.font; pixelSize: bar.fs + 1 }
         }
       }
 
@@ -261,7 +289,7 @@ PanelWindow {
         Text {
           text: bar.netLabel
           color: Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize }
+          font { family: Theme.font; pixelSize: bar.fs }
         }
       }
 
@@ -277,31 +305,7 @@ PanelWindow {
         Text {
           text: (bar.muted ? Theme.icon(0xF075F) : Theme.icon(0xF057E)) + " " + Math.round(bar.volume * 100) + "%"
           color: bar.muted ? Theme.fgDim : Theme.fg
-          font { family: Theme.font; pixelSize: Theme.fontSize }
-        }
-      }
-
-      // System tray
-      Row {
-        spacing: 8
-        anchors.verticalCenter: parent.verticalCenter
-        leftPadding: 6
-        Repeater {
-          model: SystemTray.items
-          delegate: Image {
-            required property var modelData
-            source: modelData.icon
-            width: 18; height: 18
-            sourceSize: Qt.size(18, 18)
-            MouseArea {
-              anchors.fill: parent
-              acceptedButtons: Qt.LeftButton | Qt.RightButton
-              onClicked: mouse => {
-                if (mouse.button === Qt.LeftButton) modelData.activate()
-                else if (modelData.hasMenu) modelData.display(bar, mapToItem(null, mouse.x, mouse.y).x, bar.height)
-              }
-            }
-          }
+          font { family: Theme.font; pixelSize: bar.fs }
         }
       }
     }

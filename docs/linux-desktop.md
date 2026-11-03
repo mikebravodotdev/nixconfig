@@ -116,6 +116,27 @@ If the shell dies while locked, the session stays locked. From another TTY
 and run `hyprlock`. `allow_session_lock_restore` (in `looknfeel.lua`) lets it
 take the lock over. This recovery path has not been exercised.
 
+## Gaming (Steam, Lutris, ProtonPlus)
+
+All three are Flatpaks (`home/linux.nix`). Debian has no host `flatpak`, so the
+config also supplies what a distro package normally would:
+
+- `pkgs.flatpak` on `PATH`, and `~/.local/share/flatpak/exports/share` in
+  `XDG_DATA_DIRS` (`hypr/conf/env.lua`), so the launcher lists the apps.
+- The portal's systemd units and D-Bus activation file. Steam's Flatpak won't
+  start without `org.freedesktop.portal.Flatpak`, and the session bus only
+  scans `XDG_DATA_HOME`, not `~/.nix-profile`.
+- A `plain-arrow` cursor theme plus GTK setting inside Steam's sandbox, because
+  Steam's web UI otherwise shows a pointing hand. Those are real files written
+  by `home.activation`; the sandbox can't follow symlinks into `/nix/store`.
+
+Not in Nix: `sudo apt install steam-devices` (udev rules; without `/dev/uinput`
+access Steam's Flatpak aborts on a warning dialog). ProtonPlus must install
+builds for the *Flatpak* Steam, i.e. into
+`~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d`; a stray
+`~/.local/share/Steam` makes it target a native Steam instead. The RX 7900
+already uses Mesa RADV (backports), so no driver change is needed.
+
 ## Known gaps
 
 Built and checked on this (desktop) machine, but not on real hardware or by

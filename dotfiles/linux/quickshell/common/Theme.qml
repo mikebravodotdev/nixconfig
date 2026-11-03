@@ -66,11 +66,12 @@ Singleton {
   readonly property string font:     "Hack Nerd Font"   // bar, toasts, OSD, code-like text
   readonly property string uiFont:   "Noto Sans"
   readonly property int fontSize:    15
-  readonly property int barHeight:   34
   readonly property int gap:         10
   // Scale for the launcher, panels, menus and toasts. 1.0 = the original sizes.
   readonly property real uiScale: 1.15
   function s(n) { return Math.round(n * uiScale) }
+
+  readonly property int barHeight:   s(34)   // the bar scales with everything else
 
   readonly property int launcherRadius: s(12)   // Alfred-style rounded panels; the rest stays flat
 }
