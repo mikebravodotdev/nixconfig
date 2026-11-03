@@ -13,6 +13,10 @@ rule({ class = ".*" }, { suppress_event = "maximize" })
 rule({ class = "^$", title = "^$", xwayland = true, float = true, fullscreen = false, pin = false },
      { no_focus = true })
 
+-- Civilization VI (Proton) runs borderless-windowed; exclusive fullscreen
+-- misaligns the mouse under XWayland. Keep it fullscreen instead of tiled.
+rule("steam_app_289070", { fullscreen = true })
+
 -- Tag terminals and browsers so other rules and binds can target them.
 rule("(Alacritty|kitty|foot|org\\.codeberg\\.dnkl\\.foot|com\\.mitchellh\\.ghostty|wezterm)", { tag = "+terminal" })
 rule("((google-)?[cC]hrom(e|ium)|[bB]rave-browser|[mM]icrosoft-edge|Vivaldi-stable|helium)", { tag = "+chromium-based-browser" })
