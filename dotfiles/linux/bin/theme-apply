@@ -13,6 +13,8 @@ Outputs:
   ~/.local/state/quickshell/theme/hyprlock.conf   lock screen colors, sourced by hyprlock.conf
   ~/.config/kitty/current-theme.conf              kitty colors (kitty reloads on SIGUSR1)
   ~/.config/foot/current-theme.ini                foot colors (new foot windows pick them up)
+  org.gnome.desktop.interface color-scheme        prefer-dark / prefer-light, so apps that follow
+                                                  "system" (via the appearance portal) match the theme
 """
 import json
 import os
@@ -239,6 +241,20 @@ color={strip(pal['background'])} {strip(pal['bright_foreground'])}
         atomic_write(conf, f"{include}\n" + conf.read_text())
 
 
+def write_color_scheme(pal):
+    """Tell portal-aware apps (browsers, GTK4/libadwaita, Electron, Qt) dark or light.
+
+    xdg-desktop-portal serves org.freedesktop.appearance color-scheme from this
+    gsettings key; the Hyprland session has no dark-mode flag of its own.
+    """
+    scheme = "prefer-light" if pal["mode"] == "light" else "prefer-dark"
+    try:
+        subprocess.run(["gsettings", "set", "org.gnome.desktop.interface", "color-scheme", scheme],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False, timeout=5)
+    except (OSError, subprocess.SubprocessError):
+        pass   # no gsettings / dconf: colors still apply everywhere else
+
+
 def apply(theme, background=None, reload=True):
     pal = load_palette(theme)
     state = read_state()
@@ -253,6 +269,7 @@ def apply(theme, background=None, reload=True):
     write_hyprlock(pal)
     write_kitty(pal)
     write_foot(pal)
+    write_color_scheme(pal)
     atomic_write(STATE, json.dumps({
         "theme": theme, "mode": pal["mode"], "palette": pal,
         "background": background, "backgrounds": remembered,
