@@ -7,6 +7,7 @@ hl.monitor({
   mode     = "5120x2160@165",
   position = "0x0",
   scale    = 1,
+  bitdepth = 10, -- 30-bit color (10 bits per channel)
 })
 
 -- Anything else that gets plugged in: preferred mode, placed automatically.
