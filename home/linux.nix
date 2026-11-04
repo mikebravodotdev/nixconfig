@@ -3,7 +3,7 @@
 # and GUI apps — the Linux counterpart to ../darwin/homebrew.nix. The Hyprland
 # desktop itself (compositor, Quickshell, terminals, theming) is ./desktop.nix.
 
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ./appimages ];
@@ -61,21 +61,24 @@
       done
     '';
     
-    # Flatpak's portal/session-helper user units + D-Bus activation. Steam's
-    # Flatpak refuses to start without org.freedesktop.portal.Flatpak, which
-    # Debian would normally get from a host flatpak package.
-    systemd.user.packages = [ pkgs.flatpak ];
+    # Debian-only Flatpak plumbing. On NixOS, services.flatpak.enable (see
+    # hosts/bigGuy) provides the portal units, D-Bus activation and the flatpak
+    # binary, so all of this is gated on the genericLinux shim (off on NixOS).
+    systemd.user.packages = lib.mkIf config.targets.genericLinux.enable [ pkgs.flatpak ];
 
     # The session bus doesn't scan ~/.nix-profile/share/dbus-1/services, only
-    # XDG_DATA_HOME, so link the activation file there.
-    xdg.dataFile."dbus-1/services/org.freedesktop.portal.Flatpak.service".source =
-      "${pkgs.flatpak}/share/dbus-1/services/org.freedesktop.portal.Flatpak.service";
+    # XDG_DATA_HOME, so link the activation file there. Steam's Flatpak refuses
+    # to start without org.freedesktop.portal.Flatpak, which Debian would
+    # normally get from a host flatpak package.
+    xdg.dataFile."dbus-1/services/org.freedesktop.portal.Flatpak.service" =
+      lib.mkIf config.targets.genericLinux.enable {
+        source = "${pkgs.flatpak}/share/dbus-1/services/org.freedesktop.portal.Flatpak.service";
+      };
 
-    home.packages = [
+    home.packages = (lib.optional config.targets.genericLinux.enable
       # On PATH so exported Flatpak .desktop entries (`flatpak run …`) launch;
-      # Debian has no host flatpak. Same package nix-flatpak installs apps with.
-      pkgs.flatpak
-
+      # Debian has no host flatpak (NixOS gets it from services.flatpak).
+      pkgs.flatpak) ++ [
       pkgs.nerd-fonts.hack
       pkgs.nerd-fonts.fira-code
       pkgs.hack-font
