@@ -85,6 +85,30 @@
       extraSpecialArgs = homeSpecialArgs;
       modules = [ nix-flatpak.homeManagerModules.nix-flatpak ./home ];
     };
+    # NixOS: the full-system counterpart to mkHome. Hardware lives in
+    # hosts/<hostname>/ (hardware-configuration.nix + default.nix); home-manager
+    # runs as a module and reuses ./home unchanged.
+    mkNixos = { hostname, system ? "x86_64-linux" }: nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { inherit username; };
+      modules = [
+        { nixpkgs.config.allowUnfree = true; }
+        ./hosts/${hostname}
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "hm-backup";
+          home-manager.extraSpecialArgs = homeSpecialArgs;
+          home-manager.sharedModules = [ nix-flatpak.homeManagerModules.nix-flatpak ];
+          home-manager.users.${username} = {
+            imports = [ ./home ];
+            # NixOS provides this layer; the Debian shim must be off.
+            targets.genericLinux.enable = nixpkgs.lib.mkForce false;
+          };
+        }
+      ];
+    };
   in
   {
     darwinConfigurations = {
@@ -96,5 +120,7 @@
     homeConfigurations = {
       "${username}@bigGuy" = mkHome { };
     };
+
+    nixosConfigurations.bigGuy = mkNixos { hostname = "bigGuy"; };
   };
 }
