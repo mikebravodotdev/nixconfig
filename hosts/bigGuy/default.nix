@@ -39,6 +39,17 @@
   # which ReGreet lists in its session dropdown automatically.
   programs.hyprland = { enable = true; withUWSM = true; };
   services.displayManager.regreet.enable = true;
+  # Default theme (Adwaita, light) renders the greeter as a blinding white
+  # screen. Switch GTK to its dark palette and force the toplevel window
+  # itself to pure black (the "background" widget is just an unset
+  # gtk::Picture, so the window's own background shows through it) for the
+  # OLED monitor.
+  services.displayManager.regreet.settings.GTK.application_prefer_dark_theme = true;
+  services.displayManager.regreet.extraCss = ''
+    window {
+      background-color: #000000;
+    }
+  '';
   programs.hyprlock.enable = true;  # also installs the hyprlock PAM service
   services.hypridle.enable = true;
   security.polkit.enable = true;
@@ -75,6 +86,19 @@
     # (exit 127) without it.
     keybase-gui
   ];
+
+  # Quickshell's own Nix wrapper only puts qtdeclarative/qtwayland/quickshell
+  # itself on NIXPKGS_QT6_QML_IMPORT_PATH and QT_PLUGIN_PATH (baked in from its
+  # buildInputs at build time); it has no idea qt5compat or qtimageformats
+  # above are sitting in systemPackages. Without this, shell.qml's
+  # Qt5Compat.GraphicalEffects import (used by components/Lock.qml) fails and
+  # Quickshell exits immediately, silently, with nothing visible on screen.
+  # The wrapper uses --prefix, so this is merged with its own paths, not
+  # overridden by them.
+  environment.sessionVariables = {
+    NIXPKGS_QT6_QML_IMPORT_PATH = "${pkgs.kdePackages.qt5compat}/lib/qt-6/qml";
+    QT_PLUGIN_PATH = "${pkgs.kdePackages.qtimageformats}/lib/qt-6/plugins";
+  };
 
   # Services the bar popups talk to
   hardware.bluetooth.enable = true;
