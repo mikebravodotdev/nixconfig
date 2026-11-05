@@ -1,12 +1,13 @@
 # home/desktop.nix
-# The Hyprland desktop on Linux (Debian 13 on bigGuy): Hyprland, the Quickshell
+# The Hyprland desktop on Linux (Debian 13 or NixOS on bigGuy): Hyprland, the Quickshell
 # shell, terminals, fonts, and the helper scripts. Linux-only; on macOS this
 # module defines an option and nothing else.
 #
-# Hyprland, Quickshell, hypridle/hyprlock, the portals and their Qt modules are
-# installed from apt (see ../scripts/install-linux-desktop-packages.sh) because
-# they need system integration (greetd/uwsm session, PAM, GPU drivers) that
-# home-manager can't provide on a non-NixOS distro. This module owns their
+# Hyprland, Quickshell, hypridle/hyprlock, the portals and their Qt modules need
+# system integration (greetd/uwsm session, PAM, GPU drivers) that home-manager
+# can't provide. On Debian they come from apt (see
+# ../scripts/install-linux-desktop-packages.sh); on NixOS from
+# ../hosts/bigGuy/default.nix. Either way this module owns their
 # *configuration*. See ../docs/linux-desktop.md.
 
 { config, pkgs, lib, omarchy, ... }:

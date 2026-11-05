@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Installs the apt packages the Hyprland desktop needs on Debian 13 (trixie).
+# Debian only: on NixOS the same list lives in hosts/bigGuy/default.nix.
 # These can't come from Nix: the compositor, the lock screen's PAM stack, the
 # greetd/uwsm session and the portals need system integration. Their
 # *configuration* is in dotfiles/linux and wired up by home/desktop.nix.

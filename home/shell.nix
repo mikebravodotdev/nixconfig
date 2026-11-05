@@ -1,7 +1,7 @@
 # home/shell.nix
 # Bash + prompt + readline, for both platforms. Replaces the old nix-darwin
 # /etc/bash.local, /etc/starship.toml and /etc/inputrc.omarchy files, which
-# had no equivalent on a non-NixOS Linux box.
+# had no equivalent on a non-NixOS Linux box (NixOS has its own /etc/bashrc).
 
 { pkgs, lib, ... }:
 

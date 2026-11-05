@@ -74,8 +74,9 @@
       ];
     };
 
-    # Linux (non-NixOS: Debian 13 on bigGuy): standalone home-manager, no system
-    # layer. The Hyprland desktop's packages come from apt; see
+    # Linux on a non-NixOS distro (Debian 13 on bigGuy today): standalone
+    # home-manager, no system layer. The Hyprland desktop's packages come from
+    # apt. On NixOS use nixosConfigurations.bigGuy below instead. See
     # docs/linux-desktop.md.
     mkHome = { system ? "x86_64-linux" }: home-manager.lib.homeManagerConfiguration {
       pkgs = import nixpkgs {

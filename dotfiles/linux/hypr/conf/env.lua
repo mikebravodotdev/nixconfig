@@ -17,7 +17,7 @@ hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 
 -- Flatpak exports (.desktop files, icons) so the launcher lists Flatpak apps.
--- Debian has no host flatpak to add this at login.
+-- Debian has no host flatpak to add this at login (NixOS already does; harmless there).
 hl.env("XDG_DATA_DIRS", os.getenv("HOME") .. "/.local/share/flatpak/exports/share:" .. (os.getenv("XDG_DATA_DIRS") or "/usr/local/share:/usr/share"))
 
 -- ~/.local/bin for the helper scripts (screenshot, etc.).

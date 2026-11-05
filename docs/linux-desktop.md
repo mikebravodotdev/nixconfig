@@ -5,11 +5,16 @@ running Hyprland 0.55 (Lua config) and a shell written in Quickshell 0.3 (QML)
 that replaces the usual bar, launcher, notification daemon, lock screen and so
 on. Everything is plain files under `dotfiles/linux/`.
 
+It can also run on **NixOS**: `nixosConfigurations.bigGuy` (`hosts/`) is the
+system layer, with home-manager as a module reusing `home/`. The config files
+are identical on both; only the system layer differs. Debian is what's in use
+today. The NixOS path evaluates but has not been built or booted.
+
 ## What comes from where
 
 | Piece | Source |
 |---|---|
-| Hyprland, hypridle/hyprlock, Quickshell, portals, greetd/uwsm, Qt modules | **apt** (`scripts/install-linux-desktop-packages.sh`). They need system integration (session, PAM, GPU). |
+| Hyprland, hypridle/hyprlock, Quickshell, portals, greetd/uwsm, Qt modules | **Debian:** apt (`scripts/install-linux-desktop-packages.sh`). They need system integration (session, PAM, GPU). **NixOS:** `hosts/bigGuy/default.nix`. |
 | Their configuration, the shell itself, helper scripts | **this repo** (`dotfiles/linux/`), linked in by `home/desktop.nix` |
 | Hack Nerd Font, Nerd Font symbols (icons) | **Nix** (`home/linux.nix`, `home/desktop.nix`) |
 | Theme palettes and wallpapers | **Nix**: the `omarchy` flake input (MIT, pinned), filtered in `home/desktop.nix` |
@@ -31,6 +36,24 @@ no `home-manager switch` needed for a tweak.
 | omarchy input, filtered | `~/.config/quickshell/themes/` |
 
 ## Setting up a fresh machine
+
+### NixOS
+
+1. Install NixOS (UEFI, systemd-boot). Replace
+   `hosts/<name>/hardware-configuration.nix` with the output of
+   `nixos-generate-config` for that machine; `hosts/bigGuy`'s UUIDs only fit
+   its current disk. For another AMD machine, copy `hosts/bigGuy/` and import
+   `hosts/amd-common.nix` from its hardware file.
+2. Clone this repo to `~/Code/nixconfig` (the config files are symlinked to
+   it), then `sudo nixos-rebuild switch --flake .#bigGuy`. That installs the
+   desktop, sets up greetd/uwsm and applies home-manager.
+3. `theme-apply --init`, then log in.
+
+Untested on hardware: the whole NixOS path, in particular that the Quickshell
+QML imports resolve (Qt5Compat, WebP) with the packages in
+`hosts/bigGuy/default.nix`.
+
+### Debian
 
 1. Install Debian 13, enable `trixie-backports`, and set up greetd to start the
    session (`/etc/greetd/config.toml`, not managed here):
@@ -118,8 +141,12 @@ take the lock over. This recovery path has not been exercised.
 
 ## Gaming (Steam, Lutris, ProtonPlus)
 
-All three are Flatpaks (`home/linux.nix`). Debian has no host `flatpak`, so the
-config also supplies what a distro package normally would:
+**On NixOS** Steam is native (`programs.steam`, with the udev rules from
+`hardware.steam-hardware`); Lutris and ProtonPlus are Flatpaks, and everything
+below about the Flatpak Steam does not apply.
+
+**On Debian** all three are Flatpaks (`home/linux.nix`). Debian has no host
+`flatpak`, so the config also supplies what a distro package normally would:
 
 - `pkgs.flatpak` on `PATH`, and `~/.local/share/flatpak/exports/share` in
   `XDG_DATA_DIRS` (`hypr/conf/env.lua`), so the launcher lists the apps.
