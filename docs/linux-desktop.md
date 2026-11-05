@@ -33,7 +33,7 @@ isn't a systemd unit.
 | Their configuration, the shell itself, helper scripts | **this repo** (`dotfiles/linux/`), linked in by `home/desktop.nix` |
 | Hack Nerd Font, Nerd Font symbols (icons) | **Nix** (`home/linux.nix`, `home/desktop.nix`) |
 | Theme palettes and wallpapers | **Nix**: the `omarchy` flake input (MIT, pinned), filtered in `home/desktop.nix` |
-| Generated state (current theme, notification history, launcher usage) | `~/.local/state/quickshell/`, never tracked |
+| Generated state (current theme, notification history, launcher usage, the `Super+K` cheat sheet's keybind list) | `~/.local/state/quickshell/`, never tracked |
 
 Config files are linked **by reference to the checkout** (`desktop.repoPath`,
 default `~/Code/nixconfig`), not copied into the Nix store. So the file in
@@ -62,7 +62,8 @@ no `home-manager switch` needed for a tweak.
 2. Clone this repo to `~/Code/nixconfig` (the config files are symlinked to
    it), then `sudo nixos-rebuild switch --flake .#bigGuy`. That installs the
    desktop, sets up greetd/uwsm and applies home-manager.
-3. `theme-apply --init`, then log in.
+3. Log in. Hyprland's autostart (`hypr/conf/autostart.lua`) runs
+   `theme-apply --init` on first login, applying the default theme (Retro 82).
 
 Built and booted on bigGuy's hardware; see the note above for what that first
 boot caught and fixed. Still unconfirmed: whether the Quickshell QML imports
@@ -89,7 +90,8 @@ boot caught and fixed. Still unconfirmed: whether the Quickshell QML imports
    on a machine that was configured by hand). The first run also adds the
    `omarchy` input to `flake.lock`: commit that. Afterwards `home-manager switch
    --flake .` is enough. Run the one-time `non-nixos-gpu-setup` it prints.
-4. `theme-apply --init` applies the default theme (Retro 82). Log in.
+4. Log in. Hyprland's autostart (`hypr/conf/autostart.lua`) runs
+   `theme-apply --init` on first login, applying the default theme (Retro 82).
 
 The first switch also pulls the pinned Omarchy source (~210 MB) for the themes.
 Fonts installed by hand into `~/.local/share/fonts` are then redundant and can
@@ -126,9 +128,10 @@ Super is the main modifier. The full list is in `hypr/conf/bindings.lua`.
   arrows focus, `Shift+arrows` swap, `Super+1..0` workspaces (`Shift` moves a window),
   `Super+S` scratchpad, `` Super+` `` drop-down terminal, `Alt+Tab` cycle.
 - **Clipboard:** `Super+C/V/X/A` work everywhere, including terminals.
-- **Shell:** `Super+Esc` system menu, `Super+Ctrl+L` lock, `Super+Ctrl+T`/`W`
-  themes and backgrounds, `Super+,` dismiss a toast, `Super+Shift+Alt+,`
-  notification history, `Super+Ctrl+Alt+,` do not disturb, `Super+Shift+Space` toggle bar.
+- **Shell:** `Super+K` keybinding cheat sheet, `Super+Esc` system menu, `Super+Ctrl+L`
+  lock, `Super+Ctrl+T`/`W` themes and backgrounds, `Super+,` dismiss a toast,
+  `Super+Shift+Alt+,` notification history, `Super+Ctrl+Alt+,` do not disturb,
+  `Super+Shift+Space` toggle bar.
 - **Capture:** `Print` region, `Shift+Print` screen, `Ctrl+Print` window,
   `Super+Print` color picker, `Super+Ctrl+Print` OCR, `Alt+Print` record.
 
@@ -137,6 +140,7 @@ Super is the main modifier. The full list is in `hypr/conf/bindings.lua`.
 `quickshell ipc call <target> <function>`:
 `launcher` toggle/present/dismiss/query "text", `clipboard` and `system`
 toggle/present/dismiss, `appearance` toggleTheme/toggleBackground/dismiss,
+`cheatsheet` toggle/present/dismiss,
 `panels` toggle `audio|network|bluetooth|power|calendar|notifications|battery` / close,
 `notifications` dismissAll/dismissOne/toggleDnd/clearHistory, `bar` toggle,
 `lock` lock/isLocked. (`battery` mock/peripherals/off previews the battery UI

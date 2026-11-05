@@ -2,6 +2,12 @@
 -- Bar and notifications come from Quickshell; a wallpaper daemon is still to do.
 
 hl.on("hyprland.start", function()
+  -- Write the palette state (state.json, hyprlock/hyprland theme files,
+  -- kitty/foot colors) before anything below reads it. `--init` only touches
+  -- state if no theme has ever been applied, so this is a no-op after the
+  -- first login and safe to run every session.
+  hl.exec_cmd("theme-apply --init")
+
   -- Make the session environment visible to systemd and D-Bus activated apps
   -- (the "slow app launch" fix).
   hl.exec_cmd("dbus-update-activation-environment --systemd --all")

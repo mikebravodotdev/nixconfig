@@ -42,6 +42,9 @@ ShellRoot {
   // Theme and wallpaper switcher (Super+Ctrl+T / Super+Ctrl+W).
   Appearance { id: appearance }
 
+  // Keybinding cheat sheet (Super+K).
+  Cheatsheet { id: cheatsheet }
+
   // Popups opened from the bar: audio, network, bluetooth, power, calendar.
   PanelHost {}
 
@@ -80,6 +83,12 @@ ShellRoot {
     function toggleTheme(): void { appearance.toggle("theme") }
     function toggleBackground(): void { appearance.toggle("background") }
     function dismiss(): void { appearance.hide() }
+  }
+  IpcHandler {
+    target: "cheatsheet"
+    function toggle(): void { cheatsheet.toggle() }
+    function present(): void { cheatsheet.show() }
+    function dismiss(): void { cheatsheet.hide() }
   }
   IpcHandler {
     target: "panels"

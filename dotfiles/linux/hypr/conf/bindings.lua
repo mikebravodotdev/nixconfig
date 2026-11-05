@@ -1,11 +1,31 @@
 -- Keybindings, after Omarchy 4.x, written as plain hl.bind calls.
 -- https://wiki.hypr.land/Configuring/Basics/Binds/
+--
+-- Every bind() call also records itself (under the nearest section() marker)
+-- into ALL_BINDS, written out as JSON below for the Super+K cheat sheet
+-- (Quickshell's Cheatsheet.qml). So the cheat sheet is always exactly what's
+-- bound here -- no separate list to keep in sync.
+
+local ALL_BINDS = {}
+local section_name = ""
+local function section(name) section_name = name end
 
 local function bind(keys, description, action, opts)
   opts = opts or {}
   opts.description = description
   if type(action) == "string" then action = hl.dsp.exec_cmd(action) end
   hl.bind(keys, action, opts)
+  -- opts.cheat = false skips the cheat sheet entry for this specific bind,
+  -- e.g. inside a per-workspace loop that already gets one generic "#" row.
+  if opts.cheat ~= false then
+    table.insert(ALL_BINDS, { category = section_name, keys = keys, description = description })
+  end
+end
+
+-- Add a cheat sheet row with no corresponding real bind (e.g. the one
+-- generic "#" row standing in for 10 per-workspace binds).
+local function cheat_only(keys, description)
+  table.insert(ALL_BINDS, { category = section_name, keys = keys, description = description })
 end
 
 local exec = hl.dsp.exec_cmd
@@ -13,6 +33,7 @@ local exec = hl.dsp.exec_cmd
 ---------------------------------------------------------------
 -- Apps
 ---------------------------------------------------------------
+section("Apps")
 bind("SUPER + RETURN",         "Terminal",     programs.terminal)
 bind("SUPER + SHIFT + RETURN", "Browser",      programs.browser)
 bind("SUPER + SHIFT + B",      "Browser",      programs.browser)
@@ -23,6 +44,7 @@ bind("SUPER + SPACE",          "Launcher",     "quickshell ipc call launcher tog
 ---------------------------------------------------------------
 -- Windows
 ---------------------------------------------------------------
+section("Windows")
 bind("SUPER + W", "Close window", hl.dsp.window.close())
 bind("SUPER + Q", "Close window", hl.dsp.window.close())
 bind("SUPER + J", "Toggle split", hl.dsp.layout("togglesplit"))
@@ -59,11 +81,15 @@ bind("SUPER + mouse:273", "Resize window", hl.dsp.window.resize(), { mouse = tru
 ---------------------------------------------------------------
 -- Workspaces (SUPER + 1..0 are keycodes 10..19)
 ---------------------------------------------------------------
+section("Workspaces")
+cheat_only("SUPER + #",               "Workspace #")
+cheat_only("SUPER + SHIFT + #",       "Move window to workspace #")
+cheat_only("SUPER + SHIFT + ALT + #", "Move window silently to #")
 for ws = 1, 10 do
   local key = "code:" .. tostring(ws + 9)
-  bind("SUPER + " .. key,                 "Workspace " .. ws,                 hl.dsp.focus({ workspace = ws }))
-  bind("SUPER + SHIFT + " .. key,         "Move window to workspace " .. ws,  hl.dsp.window.move({ workspace = ws }))
-  bind("SUPER + SHIFT + ALT + " .. key,   "Move window silently to " .. ws,   hl.dsp.window.move({ workspace = ws, follow = false }))
+  bind("SUPER + " .. key,                 "Workspace " .. ws,                 hl.dsp.focus({ workspace = ws }),                            { cheat = false })
+  bind("SUPER + SHIFT + " .. key,         "Move window to workspace " .. ws,  hl.dsp.window.move({ workspace = ws }),                       { cheat = false })
+  bind("SUPER + SHIFT + ALT + " .. key,   "Move window silently to " .. ws,   hl.dsp.window.move({ workspace = ws, follow = false }),       { cheat = false })
 end
 
 bind("SUPER + TAB",        "Next workspace",     hl.dsp.focus({ workspace = "m+1" }))
@@ -73,17 +99,20 @@ bind("SUPER + mouse_down", "Next workspace",     hl.dsp.focus({ workspace = "m+1
 bind("SUPER + mouse_up",   "Previous workspace", hl.dsp.focus({ workspace = "m-1" }))
 
 -- Scratchpad and Quake-style terminal.
+section("Scratchpad")
 bind("SUPER + S",         "Toggle scratchpad",       hl.dsp.workspace.toggle_special("scratchpad"))
 bind("SUPER + ALT + S",   "Move window to scratchpad", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }))
 bind("SUPER + grave",     "Toggle Quake console",    hl.dsp.workspace.toggle_special("qconsole"))
 bind("SUPER + SHIFT + grave", "Move window to Quake console", hl.dsp.window.move({ workspace = "special:qconsole", follow = false }))
 
 -- Multi-monitor.
+section("Monitors")
 bind("CTRL + ALT + TAB",            "Focus next monitor",     hl.dsp.focus({ monitor = "+1" }))
 bind("SUPER + SHIFT + ALT + LEFT",  "Workspace to left monitor",  hl.dsp.workspace.move({ monitor = "l" }))
 bind("SUPER + SHIFT + ALT + RIGHT", "Workspace to right monitor", hl.dsp.workspace.move({ monitor = "r" }))
 
 -- Groups (tabbed windows).
+section("Groups")
 bind("SUPER + G",              "Toggle group",           hl.dsp.group.toggle())
 bind("SUPER + ALT + G",        "Move window out of group", hl.dsp.window.move({ out_of_group = true }))
 bind("SUPER + ALT + LEFT",     "Move window into group left",  hl.dsp.window.move({ into_group = "l" }))
@@ -99,6 +128,7 @@ bind("SUPER + CTRL + RIGHT",   "Group focus right",      hl.dsp.group.next())
 -- Universal copy / paste / cut (Omarchy's Super+C/V/X)
 -- Sends Ctrl+C/V/X to apps and Ctrl+Shift+C/V to terminals.
 ---------------------------------------------------------------
+section("Clipboard")
 local function send_once(mods, key)
   return function()
     hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "down" }))
@@ -134,6 +164,8 @@ bind("SUPER + CTRL + V", "Clipboard history", "quickshell ipc call clipboard tog
 ---------------------------------------------------------------
 -- Shell (Quickshell IPC): notifications and bar
 ---------------------------------------------------------------
+section("Shell")
+bind("SUPER + K",             "Keybinding cheat sheet",    "quickshell ipc call cheatsheet toggle")
 bind("SUPER + comma",         "Dismiss last notification", "quickshell ipc call notifications dismissOne")
 bind("SUPER + SHIFT + comma", "Dismiss all notifications", "quickshell ipc call notifications dismissAll")
 bind("SUPER + SHIFT + SPACE", "Toggle top bar",            "quickshell ipc call bar toggle")
@@ -150,6 +182,7 @@ bind("SUPER + CTRL + SPACE", "Background switcher", "quickshell ipc call appeara
 ---------------------------------------------------------------
 -- Capture
 ---------------------------------------------------------------
+section("Capture")
 bind("PRINT",                "Screenshot region",        "hypr-screenshot region")
 bind("SHIFT + PRINT",        "Screenshot full screen",   "hypr-screenshot screen")
 bind("CTRL + PRINT",         "Screenshot window",        "hypr-screenshot window")
@@ -160,6 +193,7 @@ bind("ALT + PRINT",          "Screen recording toggle",  "hypr-screenshot record
 ---------------------------------------------------------------
 -- Session
 ---------------------------------------------------------------
+section("Session")
 bind("SUPER + ESCAPE",         "System menu", "quickshell ipc call system toggle")
 bind("XF86PowerOff",           "System menu", "quickshell ipc call system toggle", { locked = true })
 bind("SUPER + CTRL + L",       "Lock screen", "lock-screen")
@@ -168,6 +202,7 @@ bind("SUPER + CTRL + ESCAPE",  "Reload config", "hyprctl reload")
 ---------------------------------------------------------------
 -- Media, volume, brightness
 ---------------------------------------------------------------
+section("Media")
 local lr = { locked = true, repeating = true }
 local l  = { locked = true }
 
@@ -185,3 +220,24 @@ bind("XF86AudioNext",  "Next track",     "playerctl next",       l)
 bind("XF86AudioPause", "Play/pause",     "playerctl play-pause", l)
 bind("XF86AudioPlay",  "Play/pause",     "playerctl play-pause", l)
 bind("XF86AudioPrev",  "Previous track", "playerctl previous",   l)
+
+---------------------------------------------------------------
+-- Cheat sheet data (see ALL_BINDS above)
+---------------------------------------------------------------
+local function json_escape(s)
+  return s:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("\n", "\\n")
+end
+
+local state_dir = os.getenv("HOME") .. "/.local/state/quickshell"
+os.execute('mkdir -p "' .. state_dir .. '"')
+local out = io.open(state_dir .. "/binds.json", "w")
+if out then
+  local parts = {}
+  for _, b in ipairs(ALL_BINDS) do
+    table.insert(parts, string.format(
+      '{"category":"%s","keys":"%s","description":"%s"}',
+      json_escape(b.category), json_escape(b.keys), json_escape(b.description)))
+  end
+  out:write("[" .. table.concat(parts, ",") .. "]")
+  out:close()
+end
