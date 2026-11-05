@@ -5,6 +5,10 @@
 
 { config, pkgs, lib, ... }:
 
+let
+  # True on Debian (genericLinux shim on); false on NixOS, which has native Steam.
+  isDebian = config.targets.genericLinux.enable;
+in
 {
   imports = [ ./appimages ];
 
@@ -28,24 +32,23 @@
         # appimageTools can't extract (squashfs only).
         "com.vysp3r.ProtonPlus"
 
-        # Gaming. The Flatpak Steam is the "Steam" ProtonPlus must target; its
-        # Proton builds live in ~/.var/app/com.valvesoftware.Steam/data/Steam/
-        # compatibilitytools.d. System-level prerequisite (not manageable
-        # here): `sudo apt install steam-devices` for /dev/uinput access.
-        "com.valvesoftware.Steam"
+        # Gaming. Lutris on both platforms; the Flatpak Steam (see below) only on
+        # Debian — NixOS uses programs.steam from hosts/bigGuy.
         "net.lutris.Lutris"
-      ];
+      ] ++ lib.optional isDebian "com.valvesoftware.Steam";
 
       # Steam's web UI draws the pointing-hand cursor; use the plain arrow
       # (theme created by home.activation below).
-      overrides."com.valvesoftware.Steam".Environment.XCURSOR_THEME = "plain-arrow";
+      overrides = lib.mkIf isDebian {
+        "com.valvesoftware.Steam".Environment.XCURSOR_THEME = "plain-arrow";
+      };
     };
 
     # Files inside the Steam Flatpak's sandbox home must be real files: the
     # sandbox can't follow symlinks into /nix/store, so no home.file here.
     # "plain-arrow" = Adwaita with every hand cursor replaced by the arrow;
     # the GTK setting is what Steam's Chromium UI actually reads.
-    home.activation.steamPlainCursor = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.steamPlainCursor = lib.mkIf isDebian (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       steam="$HOME/.var/app/com.valvesoftware.Steam"
       theme="$steam/.local/share/icons/plain-arrow"
       run mkdir -p "$theme/cursors" "$steam/.config/gtk-3.0" "$steam/.config/gtk-4.0"
@@ -59,7 +62,7 @@
         printf '[Settings]\ngtk-cursor-theme-name=plain-arrow\ngtk-cursor-theme-size=24\n' \
           > "$steam/.config/gtk-$v/settings.ini"
       done
-    '';
+    '');
     
     # Debian-only Flatpak plumbing. On NixOS, services.flatpak.enable (see
     # hosts/bigGuy) provides the portal units, D-Bus activation and the flatpak
