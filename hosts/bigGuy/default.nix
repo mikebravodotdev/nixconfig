@@ -16,6 +16,13 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # keybase-gui bundles Electron 28 (EOL, multiple known CVEs) and is
+  # blocked by nixpkgs' insecure-package check by default; allowed anyway
+  # since we actually want the GUI (see services.keybase.enable below).
+  # Re-pin the version string if a nixpkgs update bumps keybase-gui and this
+  # starts failing again.
+  nixpkgs.config.permittedInsecurePackages = [ "keybase-gui-6.5.1" ];
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
