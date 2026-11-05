@@ -91,6 +91,11 @@ in
       # Needed for Neovim's clipboard = "unnamedplus" under Wayland
       pkgs.wl-clipboard
 
+      # Claude Code CLI. Was dropped under the assumption apt's
+      # claude-desktop (below) covered it on Debian; it doesn't, and NixOS
+      # has no apt at all, so the terminal had no `claude` on either distro.
+      pkgs.claude-code
+
       # Homebrew brews / CLI casks on macOS
       pkgs.dart
 

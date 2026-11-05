@@ -7,8 +7,23 @@ on. Everything is plain files under `dotfiles/linux/`.
 
 It can also run on **NixOS**: `nixosConfigurations.bigGuy` (`hosts/`) is the
 system layer, with home-manager as a module reusing `home/`. The config files
-are identical on both; only the system layer differs. Debian is what's in use
-today. The NixOS path evaluates but has not been built or booted.
+are identical on both; only the system layer differs. bigGuy was reinstalled
+to NixOS on 2026-11-05; that is now the system in use.
+
+The first `nixos-rebuild switch --flake .#bigGuy` booted into a working
+Hyprland session (greetd/ReGreet, hypridle/hyprlock lock+unlock, uwsm env all
+worked) but two things were missing because they'd only ever been checked by
+`nix flake check`, not by actually logging in: `pkgs.claude-code` had been
+dropped from `home/linux.nix` on the assumption Debian's apt-installed
+`claude-desktop` covered it — it doesn't, and NixOS has no apt either, so
+`claude` was on no PATH anywhere; and `services.keybase.enable` only
+installs the daemon, so its self-written
+`~/.config/autostart/keybase_autostart.desktop` (`Exec=... run_keybase`)
+failed with exit 127 until `pkgs.keybase-gui` was added. Both are fixed now.
+Still unverified: whether the Quickshell shell's QML imports (Qt5Compat,
+WebP) actually render a bar/panels, as opposed to Hyprland just coming up
+bare — nothing in the systemd journal distinguishes the two since Quickshell
+isn't a systemd unit.
 
 ## What comes from where
 
@@ -49,9 +64,10 @@ no `home-manager switch` needed for a tweak.
    desktop, sets up greetd/uwsm and applies home-manager.
 3. `theme-apply --init`, then log in.
 
-Untested on hardware: the whole NixOS path, in particular that the Quickshell
-QML imports resolve (Qt5Compat, WebP) with the packages in
-`hosts/bigGuy/default.nix`.
+Built and booted on bigGuy's hardware; see the note above for what that first
+boot caught and fixed. Still unconfirmed: whether the Quickshell QML imports
+(Qt5Compat, WebP) actually resolve and render the bar/panels — check for a
+`quickshell` process and the bar on screen after logging in.
 
 ### Debian
 
@@ -171,10 +187,7 @@ hand: the battery widget against a real battery (only simulated), Bluetooth
 pairing, connecting to a Wi-Fi network, the lock screen's wrong-password
 animation, idle locking through hypridle, and the light themes.
 
-The Nix side was evaluated with Nix 2.23 (a static build, scratch store, no
-install) but never built or switched: the Linux home-manager config and the
-`Hermes` Mac config both evaluate, the Mac's managed-file list is identical to
-`master`'s, every link target and the generated `foot.ini` were inspected, and
-the themes build script was run against the real Omarchy source and produced
-the same 23 themes as the hand-made copy. Not covered: an actual
-`home-manager switch` on bigGuy, and building the Linux packages.
+The NixOS `nixos-rebuild switch --flake .#bigGuy` on bigGuy itself (2026-11-05)
+is the first real build+switch, and is covered above. Still not covered:
+an actual `home-manager switch -b hm-backup --flake .#mikebravo@bigGuy` on
+Debian — that path remains eval-only.

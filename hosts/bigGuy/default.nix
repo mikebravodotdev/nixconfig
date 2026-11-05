@@ -1,7 +1,8 @@
 # hosts/bigGuy/default.nix
 # System layer for bigGuy on NixOS. Replaces the apt packages and
-# scripts/install-linux-desktop-packages.sh used on Debian. Not yet built or
-# booted: evaluates, but see docs/linux-desktop.md for what is untested.
+# scripts/install-linux-desktop-packages.sh used on Debian. Built and boots
+# into Hyprland (2026-11-05); see docs/linux-desktop.md for what's still
+# unverified (the Quickshell QML imports in particular).
 
 { pkgs, username, ... }:
 
@@ -25,15 +26,12 @@
   };
   networking.networkmanager.enable = true;
 
-  # Desktop session: greetd -> uwsm -> Hyprland.
+  # Desktop session: greetd -> ReGreet (graphical GTK greeter, runs in its
+  # own cage/wlroots session). programs.hyprland.withUWSM registers a
+  # "Hyprland (uwsm)" entry in /run/current-system/sw/share/wayland-sessions,
+  # which ReGreet lists in its session dropdown automatically.
   programs.hyprland = { enable = true; withUWSM = true; };
-  services.greetd = {
-    enable = true;
-    settings.default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --cmd 'uwsm start hyprland-uwsm.desktop'";
-      user = "greeter";
-    };
-  };
+  services.displayManager.regreet.enable = true;
   programs.hyprlock.enable = true;  # also installs the hyprlock PAM service
   services.hypridle.enable = true;
   security.polkit.enable = true;
@@ -63,6 +61,12 @@
     # Tools the scripts and bar widgets call
     grim slurp wl-clipboard cliphist wf-recorder tesseract jq python3
     libnotify brightnessctl playerctl
+
+    # services.keybase.enable (below) only installs the CLI/daemon; on first
+    # run it writes ~/.config/autostart/keybase_autostart.desktop with
+    # `Exec=... run_keybase`, which comes from the GUI package and crashes
+    # (exit 127) without it.
+    keybase-gui
   ];
 
   # Services the bar popups talk to
