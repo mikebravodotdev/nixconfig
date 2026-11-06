@@ -212,6 +212,7 @@ PanelWindow {
       }
 
       BarButton {
+        panel: "cpu"
         Text {
           text: Theme.icon(0xF0EE0) + " " + bar.cpuPct + "%"
           color: bar.cpuPct > 85 ? Theme.urgent : Theme.fg
@@ -219,6 +220,7 @@ PanelWindow {
         }
       }
       BarButton {
+        panel: "memory"
         Text {
           text: Theme.icon(0xF035B) + " " + bar.memPct + "%"
           color: bar.memPct > 90 ? Theme.urgent : Theme.fg

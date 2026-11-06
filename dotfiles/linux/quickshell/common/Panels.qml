@@ -4,7 +4,7 @@ import Quickshell
 
 // Which bar popup is open, and where it hangs from.
 Singleton {
-  property string current: ""      // "audio" | "network" | "bluetooth" | "power" | "calendar" | ""
+  property string current: ""      // "audio" | "network" | "bluetooth" | "power" | "calendar" | "cpu" | "memory" | ""
   property real anchorX: 0         // screen x the popup should centre on
   property string screenName: ""
 

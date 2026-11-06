@@ -53,7 +53,7 @@ Scope {
         id: loader
         sourceComponent: ({
           audio: audio, network: network, bluetooth: bluetooth, power: power, calendar: calendar,
-          notifications: notifications, battery: battery
+          notifications: notifications, battery: battery, cpu: cpu, memory: memory
         })[Panels.current]
       }
     }
@@ -65,5 +65,7 @@ Scope {
     Component { id: calendar;  CalendarPanel {} }
     Component { id: notifications; NotificationsPanel {} }
     Component { id: battery;   BatteryPanel {} }
+    Component { id: cpu;       CpuPanel {} }
+    Component { id: memory;    MemoryPanel {} }
   }
 }
