@@ -10,6 +10,14 @@ hl.monitor({
   bitdepth = 10, -- 30-bit color (10 bits per channel)
 })
 
+-- Laptop panel (myVictus): scale 1.2 divides 1920x1200 evenly (1600x1000).
+hl.monitor({
+  output   = "eDP-1",
+  mode     = "preferred",
+  position = "0x0",
+  scale    = 1.2,
+})
+
 -- Anything else that gets plugged in: preferred mode, placed automatically.
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
