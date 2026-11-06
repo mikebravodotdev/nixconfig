@@ -1,45 +1,17 @@
 # hosts/bigGuy/default.nix
-# System layer for bigGuy on NixOS: everything the Hyprland desktop needs
-# that home-manager can't provide (session, PAM, GPU drivers). Built and
-# boots into Hyprland (2026-11-05); see docs/linux-desktop.md for what's
-# still unverified (the Quickshell QML imports in particular).
+# bigGuy: Ryzen 9 9900X + Radeon RX 7900 desktop on an OLED monitor. The
+# desktop itself is in ../desktop-common.nix; this file is only what is
+# specific to this machine.
 
-{ pkgs, username, ... }:
+{ ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [ ../desktop-common.nix ./hardware-configuration.nix ];
 
   networking.hostName = "bigGuy";
-  time.timeZone = "America/New_York"; # adjust if wrong
-  i18n.defaultLocale = "en_US.UTF-8";
   system.stateVersion = "26.05";
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # keybase-gui bundles Electron 28 (EOL, multiple known CVEs) and is
-  # blocked by nixpkgs' insecure-package check by default; allowed anyway
-  # since we actually want the GUI (see services.keybase.enable below).
-  # Re-pin the version string if a nixpkgs update bumps keybase-gui and this
-  # starts failing again.
-  nixpkgs.config.permittedInsecurePackages = [ "keybase-gui-6.5.1" ];
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  users.users.${username} = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "input" "podman" ];
-  };
-  networking.networkmanager.enable = true;
-
-  # Desktop session: greetd -> ReGreet (graphical GTK greeter, runs in its
-  # own cage/wlroots session). programs.hyprland.withUWSM registers a
-  # "Hyprland (uwsm)" entry in /run/current-system/sw/share/wayland-sessions,
-  # which ReGreet lists in its session dropdown automatically.
-  programs.hyprland = { enable = true; withUWSM = true; };
-  services.displayManager.regreet.enable = true;
-  # Default theme (Adwaita, light) renders the greeter as a blinding white
+  # ReGreet: the default theme (Adwaita, light) renders the greeter as a blinding white
   # screen. Switch GTK to its dark palette and force the toplevel window
   # itself to pure black (the "background" widget is just an unset
   # gtk::Picture, so the window's own background shows through it) for the
@@ -50,67 +22,4 @@
       background-color: #000000;
     }
   '';
-  programs.hyprlock.enable = true;  # also installs the hyprlock PAM service
-  services.hypridle.enable = true;
-  security.polkit.enable = true;
-  xdg.portal = {
-    enable = true; # xdg-desktop-portal-hyprland comes with programs.hyprland
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
-  services.pipewire = { enable = true; alsa.enable = true; pulse.enable = true; };
-
-  # The Nix equivalents of scripts/install-linux-desktop-packages.sh. Their
-  # configuration is in dotfiles/linux, linked in by home/desktop.nix.
-  environment.systemPackages = with pkgs; [
-    # Session helpers
-    hyprpaper hyprpicker hyprshutdown hyprsunset hyprpolkitagent hyprland-qtutils
-    xdg-utils
-
-    # The shell and what its QML imports / decodes (WebP wallpapers, icons)
-    quickshell
-    kdePackages.qt5compat
-    kdePackages.qtimageformats
-    kdePackages.breeze-icons
-    noto-fonts
-
-    # Apps the keybindings launch
-    kitty foot nautilus chromium
-
-    # Tools the scripts and bar widgets call
-    grim slurp wl-clipboard cliphist wf-recorder tesseract jq python3
-    libnotify brightnessctl playerctl
-
-    # services.keybase.enable (below) only installs the CLI/daemon; on first
-    # run it writes ~/.config/autostart/keybase_autostart.desktop with
-    # `Exec=... run_keybase`, which comes from the GUI package and crashes
-    # (exit 127) without it.
-    keybase-gui
-  ];
-
-  # Quickshell's own Nix wrapper only puts qtdeclarative/qtwayland/quickshell
-  # itself on NIXPKGS_QT6_QML_IMPORT_PATH and QT_PLUGIN_PATH (baked in from its
-  # buildInputs at build time); it has no idea qt5compat or qtimageformats
-  # above are sitting in systemPackages. Without this, shell.qml's
-  # Qt5Compat.GraphicalEffects import (used by components/Lock.qml) fails and
-  # Quickshell exits immediately, silently, with nothing visible on screen.
-  # The wrapper uses --prefix, so this is merged with its own paths, not
-  # overridden by them.
-  environment.sessionVariables = {
-    NIXPKGS_QT6_QML_IMPORT_PATH = "${pkgs.kdePackages.qt5compat}/lib/qt-6/qml";
-    QT_PLUGIN_PATH = "${pkgs.kdePackages.qtimageformats}/lib/qt-6/plugins";
-  };
-
-  # Services the bar popups talk to
-  hardware.bluetooth.enable = true;
-  services.upower.enable = true;
-
-  # System-level installs: browser integration, polkit and FUSE need this
-  # layer, not home-manager.
-  services.flatpak.enable = true;
-  programs.steam.enable = true;
-  hardware.steam-hardware.enable = true;
-  programs._1password.enable = true;
-  programs._1password-gui = { enable = true; polkitPolicyOwners = [ username ]; };
-  virtualisation.podman.enable = true;
-  services.keybase.enable = true;
 }

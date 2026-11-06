@@ -51,8 +51,12 @@ no `home-manager switch` needed for a tweak.
 1. Install NixOS (UEFI, systemd-boot). Replace
    `hosts/<name>/hardware-configuration.nix` with the output of
    `nixos-generate-config` for that machine; `hosts/bigGuy`'s UUIDs only fit
-   its current disk. For another AMD machine, copy `hosts/bigGuy/` and import
-   `hosts/amd-common.nix` from its hardware file.
+   its current disk. The desktop is shared by all hosts in
+   `hosts/desktop-common.nix`; AMD hardware bits in `hosts/amd-common.nix`.
+   A host is just `hosts/<name>/{default.nix,hardware-configuration.nix}`
+   (import `../desktop-common.nix` and `../amd-common.nix` respectively) plus
+   a `mkNixos` line in `flake.nix`. `hosts/myVictus` (laptop, iGPU + dGPU) is
+   the example; its hardware file is a placeholder until generated on the laptop.
 2. Clone this repo to `~/Code/nixconfig` (the config files are symlinked to
    it), then `sudo nixos-rebuild switch --flake .#bigGuy`. That installs the
    desktop, sets up greetd/uwsm and applies home-manager. The first switch

@@ -100,6 +100,9 @@
       "myMacmini" = mkDarwinSystem { };
     };
 
-    nixosConfigurations.bigGuy = mkNixos { hostname = "bigGuy"; };
+    nixosConfigurations = {
+      bigGuy = mkNixos { hostname = "bigGuy"; };
+      myVictus = mkNixos { hostname = "myVictus"; };
+    };
   };
 }

@@ -52,7 +52,6 @@
       pkgs.firefox
       pkgs.firefox-devedition
       pkgs.google-chrome
-      pkgs.brave
       pkgs.microsoft-edge
 
       # Communication
