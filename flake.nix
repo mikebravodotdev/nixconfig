@@ -74,21 +74,8 @@
       ];
     };
 
-    # Linux on a non-NixOS distro (Debian 13 on bigGuy today): standalone
-    # home-manager, no system layer. The Hyprland desktop's packages come from
-    # apt. On NixOS use nixosConfigurations.bigGuy below instead. See
-    # docs/linux-desktop.md.
-    mkHome = { system ? "x86_64-linux" }: home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-      extraSpecialArgs = homeSpecialArgs;
-      modules = [ nix-flatpak.homeManagerModules.nix-flatpak ./home ];
-    };
-    # NixOS: the full-system counterpart to mkHome. Hardware lives in
-    # hosts/<hostname>/ (hardware-configuration.nix + default.nix); home-manager
-    # runs as a module and reuses ./home unchanged.
+    # NixOS: hardware lives in hosts/<hostname>/ (hardware-configuration.nix +
+    # default.nix); home-manager runs as a module and reuses ./home unchanged.
     mkNixos = { hostname, system ? "x86_64-linux" }: nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit username; };
@@ -102,11 +89,7 @@
           home-manager.backupFileExtension = "hm-backup";
           home-manager.extraSpecialArgs = homeSpecialArgs;
           home-manager.sharedModules = [ nix-flatpak.homeManagerModules.nix-flatpak ];
-          home-manager.users.${username} = {
-            imports = [ ./home ];
-            # NixOS provides this layer; the Debian shim must be off.
-            targets.genericLinux.enable = nixpkgs.lib.mkForce false;
-          };
+          home-manager.users.${username} = import ./home;
         }
       ];
     };
@@ -115,11 +98,6 @@
     darwinConfigurations = {
       "Hermes" = mkDarwinSystem { };
       "myMacmini" = mkDarwinSystem { };
-    };
-
-    # `home-manager switch --flake .` picks "<user>@<hostname>" automatically.
-    homeConfigurations = {
-      "${username}@bigGuy" = mkHome { };
     };
 
     nixosConfigurations.bigGuy = mkNixos { hostname = "bigGuy"; };

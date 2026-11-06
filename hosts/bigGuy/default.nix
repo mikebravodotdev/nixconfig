@@ -1,8 +1,8 @@
 # hosts/bigGuy/default.nix
-# System layer for bigGuy on NixOS. Replaces the apt packages and
-# scripts/install-linux-desktop-packages.sh used on Debian. Built and boots
-# into Hyprland (2026-11-05); see docs/linux-desktop.md for what's still
-# unverified (the Quickshell QML imports in particular).
+# System layer for bigGuy on NixOS: everything the Hyprland desktop needs
+# that home-manager can't provide (session, PAM, GPU drivers). Built and
+# boots into Hyprland (2026-11-05); see docs/linux-desktop.md for what's
+# still unverified (the Quickshell QML imports in particular).
 
 { pkgs, username, ... }:
 
@@ -104,7 +104,8 @@
   hardware.bluetooth.enable = true;
   services.upower.enable = true;
 
-  # Things that had to be installed by hand on Debian.
+  # System-level installs: browser integration, polkit and FUSE need this
+  # layer, not home-manager.
   services.flatpak.enable = true;
   programs.steam.enable = true;
   hardware.steam-hardware.enable = true;

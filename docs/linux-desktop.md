@@ -1,35 +1,31 @@
 # Linux desktop (bigGuy): Hyprland + Quickshell
 
-This repo is the authority for the Linux desktop. The machine is Debian 13
-running Hyprland 0.55 (Lua config) and a shell written in Quickshell 0.3 (QML)
-that replaces the usual bar, launcher, notification daemon, lock screen and so
-on. Everything is plain files under `dotfiles/linux/`.
+This repo is the authority for the Linux desktop. The machine is NixOS
+(`nixosConfigurations.bigGuy`, `hosts/bigGuy/`) running Hyprland 0.55 (Lua
+config) and a shell written in Quickshell 0.3 (QML) that replaces the usual
+bar, launcher, notification daemon, lock screen and so on. The system layer
+is `hosts/bigGuy/default.nix`; home-manager runs as a module reusing `home/`.
+Everything else is plain files under `dotfiles/linux/`.
 
-It can also run on **NixOS**: `nixosConfigurations.bigGuy` (`hosts/`) is the
-system layer, with home-manager as a module reusing `home/`. The config files
-are identical on both; only the system layer differs. bigGuy was reinstalled
-to NixOS on 2026-11-05; that is now the system in use.
+bigGuy was reinstalled from Debian to NixOS on 2026-11-05; NixOS is the only
+Linux target this repo supports now.
 
 The first `nixos-rebuild switch --flake .#bigGuy` booted into a working
 Hyprland session (greetd/ReGreet, hypridle/hyprlock lock+unlock, uwsm env all
 worked) but two things were missing because they'd only ever been checked by
 `nix flake check`, not by actually logging in: `pkgs.claude-code` had been
-dropped from `home/linux.nix` on the assumption Debian's apt-installed
-`claude-desktop` covered it — it doesn't, and NixOS has no apt either, so
-`claude` was on no PATH anywhere; and `services.keybase.enable` only
-installs the daemon, so its self-written
+dropped from `home/linux.nix`, so `claude` was on no PATH anywhere; and
+`services.keybase.enable` only installs the daemon, so its self-written
 `~/.config/autostart/keybase_autostart.desktop` (`Exec=... run_keybase`)
 failed with exit 127 until `pkgs.keybase-gui` was added. Both are fixed now.
-Still unverified: whether the Quickshell shell's QML imports (Qt5Compat,
-WebP) actually render a bar/panels, as opposed to Hyprland just coming up
-bare — nothing in the systemd journal distinguishes the two since Quickshell
-isn't a systemd unit.
+Quickshell's QML imports (Qt5Compat, WebP) do resolve and render the bar and
+panels correctly — confirmed live, screenshots and all.
 
 ## What comes from where
 
 | Piece | Source |
 |---|---|
-| Hyprland, hypridle/hyprlock, Quickshell, portals, greetd/uwsm, Qt modules | **Debian:** apt (`scripts/install-linux-desktop-packages.sh`). They need system integration (session, PAM, GPU). **NixOS:** `hosts/bigGuy/default.nix`. |
+| Hyprland, hypridle/hyprlock, Quickshell, portals, greetd/uwsm, Qt modules | `hosts/bigGuy/default.nix` (they need system integration: session, PAM, GPU) |
 | Their configuration, the shell itself, helper scripts | **this repo** (`dotfiles/linux/`), linked in by `home/desktop.nix` |
 | Hack Nerd Font, Nerd Font symbols (icons) | **Nix** (`home/linux.nix`, `home/desktop.nix`) |
 | Theme palettes and wallpapers | **Nix**: the `omarchy` flake input (MIT, pinned), filtered in `home/desktop.nix` |
@@ -52,8 +48,6 @@ no `home-manager switch` needed for a tweak.
 
 ## Setting up a fresh machine
 
-### NixOS
-
 1. Install NixOS (UEFI, systemd-boot). Replace
    `hosts/<name>/hardware-configuration.nix` with the output of
    `nixos-generate-config` for that machine; `hosts/bigGuy`'s UUIDs only fit
@@ -61,41 +55,13 @@ no `home-manager switch` needed for a tweak.
    `hosts/amd-common.nix` from its hardware file.
 2. Clone this repo to `~/Code/nixconfig` (the config files are symlinked to
    it), then `sudo nixos-rebuild switch --flake .#bigGuy`. That installs the
-   desktop, sets up greetd/uwsm and applies home-manager.
+   desktop, sets up greetd/uwsm and applies home-manager. The first switch
+   also pulls the pinned Omarchy source (~210 MB) for the themes.
 3. Log in. Hyprland's autostart (`hypr/conf/autostart.lua`) runs
    `theme-apply --init` on first login, applying the default theme (Retro 82).
 
 Built and booted on bigGuy's hardware; see the note above for what that first
-boot caught and fixed. Still unconfirmed: whether the Quickshell QML imports
-(Qt5Compat, WebP) actually resolve and render the bar/panels — check for a
-`quickshell` process and the bar on screen after logging in.
-
-### Debian
-
-1. Install Debian 13, enable `trixie-backports`, and set up greetd to start the
-   session (`/etc/greetd/config.toml`, not managed here):
-   ```toml
-   [terminal]
-   vt = 1
-   [default_session]
-   command = "/usr/sbin/agreety --cmd 'uwsm start hyprland.desktop'"
-   user = "_greetd"
-   ```
-2. `scripts/install-linux-desktop-packages.sh` (add `-s` to simulate).
-3. Install Nix, clone this repo to `~/Code/nixconfig`, then:
-   ```sh
-   nix run home-manager -- switch -b hm-backup --flake .#mikebravo@bigGuy
-   ```
-   `-b hm-backup` moves any existing real files out of the way (the first time
-   on a machine that was configured by hand). The first run also adds the
-   `omarchy` input to `flake.lock`: commit that. Afterwards `home-manager switch
-   --flake .` is enough. Run the one-time `non-nixos-gpu-setup` it prints.
-4. Log in. Hyprland's autostart (`hypr/conf/autostart.lua`) runs
-   `theme-apply --init` on first login, applying the default theme (Retro 82).
-
-The first switch also pulls the pinned Omarchy source (~210 MB) for the themes.
-Fonts installed by hand into `~/.local/share/fonts` are then redundant and can
-be deleted.
+boot caught and fixed.
 
 ## Day to day
 
@@ -161,28 +127,11 @@ take the lock over. This recovery path has not been exercised.
 
 ## Gaming (Steam, Lutris, ProtonPlus)
 
-**On NixOS** Steam is native (`programs.steam`, with the udev rules from
-`hardware.steam-hardware`); Lutris and ProtonPlus are Flatpaks, and everything
-below about the Flatpak Steam does not apply.
-
-**On Debian** all three are Flatpaks (`home/linux.nix`). Debian has no host
-`flatpak`, so the config also supplies what a distro package normally would:
-
-- `pkgs.flatpak` on `PATH`, and `~/.local/share/flatpak/exports/share` in
-  `XDG_DATA_DIRS` (`hypr/conf/env.lua`), so the launcher lists the apps.
-- The portal's systemd units and D-Bus activation file. Steam's Flatpak won't
-  start without `org.freedesktop.portal.Flatpak`, and the session bus only
-  scans `XDG_DATA_HOME`, not `~/.nix-profile`.
-- A `plain-arrow` cursor theme plus GTK setting inside Steam's sandbox, because
-  Steam's web UI otherwise shows a pointing hand. Those are real files written
-  by `home.activation`; the sandbox can't follow symlinks into `/nix/store`.
-
-Not in Nix: `sudo apt install steam-devices` (udev rules; without `/dev/uinput`
-access Steam's Flatpak aborts on a warning dialog). ProtonPlus must install
-builds for the *Flatpak* Steam, i.e. into
-`~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d`; a stray
-`~/.local/share/Steam` makes it target a native Steam instead. The RX 7900
-already uses Mesa RADV (backports), so no driver change is needed.
+Steam is native (`programs.steam` in `hosts/bigGuy/default.nix`, with the
+udev rules from `hardware.steam-hardware`). Lutris and ProtonPlus are
+Flatpaks (`home/linux.nix`); `hosts/bigGuy`'s `services.flatpak.enable`
+provides the portal units, D-Bus activation and the `flatpak` binary they
+need. The RX 7900 uses Mesa RADV, so no driver setup is needed beyond that.
 
 ## Known gaps
 
@@ -190,8 +139,3 @@ Built and checked on this (desktop) machine, but not on real hardware or by
 hand: the battery widget against a real battery (only simulated), Bluetooth
 pairing, connecting to a Wi-Fi network, the lock screen's wrong-password
 animation, idle locking through hypridle, and the light themes.
-
-The NixOS `nixos-rebuild switch --flake .#bigGuy` on bigGuy itself (2026-11-05)
-is the first real build+switch, and is covered above. Still not covered:
-an actual `home-manager switch -b hm-backup --flake .#mikebravo@bigGuy` on
-Debian — that path remains eval-only.
