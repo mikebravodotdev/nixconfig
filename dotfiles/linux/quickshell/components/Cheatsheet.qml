@@ -124,7 +124,12 @@ Scope {
         id: card
         anchors.centerIn: parent
         width: win.cols * win.colWidth + win.z(28) * (win.cols - 1) + win.z(48)
-        height: Math.min(parent.height - win.z(80), body.implicitHeight + heading.height + win.z(70))
+        // Full content height; if that is taller than the screen, scale the
+        // whole card down uniformly (same idea as the width fit) so nothing
+        // is cut off vertically.
+        readonly property real needed: body.implicitHeight + heading.height + win.z(70)
+        height: needed
+        scale: Math.min(1, (parent.height - win.z(40)) / needed)
         radius: Theme.launcherRadius
         color: Theme.card
         border { width: 1; color: Theme.tint(0.2) }
