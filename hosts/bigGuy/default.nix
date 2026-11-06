@@ -10,16 +10,4 @@
 
   networking.hostName = "bigGuy";
   system.stateVersion = "26.05";
-
-  # ReGreet: the default theme (Adwaita, light) renders the greeter as a blinding white
-  # screen. Switch GTK to its dark palette and force the toplevel window
-  # itself to pure black (the "background" widget is just an unset
-  # gtk::Picture, so the window's own background shows through it) for the
-  # OLED monitor.
-  services.displayManager.regreet.settings.GTK.application_prefer_dark_theme = true;
-  services.displayManager.regreet.extraCss = ''
-    window {
-      background-color: #000000;
-    }
-  '';
 }

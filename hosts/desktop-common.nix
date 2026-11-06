@@ -36,6 +36,17 @@
   # which ReGreet lists in its session dropdown automatically.
   programs.hyprland = { enable = true; withUWSM = true; };
   services.displayManager.regreet.enable = true;
+  # ReGreet: the default theme (Adwaita, light) renders the greeter as a blinding white
+  # screen. Switch GTK to its dark palette and force the toplevel window
+  # itself to pure black (the "background" widget is just an unset
+  # gtk::Picture, so the window's own background shows through it) for the
+  # OLED monitor.
+  services.displayManager.regreet.settings.GTK.application_prefer_dark_theme = true;
+  services.displayManager.regreet.extraCss = ''
+    window {
+      background-color: #000000;
+    }
+  '';
   programs.hyprlock.enable = true;  # also installs the hyprlock PAM service
   services.hypridle.enable = true;
   security.polkit.enable = true;
