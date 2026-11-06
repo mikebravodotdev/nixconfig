@@ -95,8 +95,14 @@ Scope {
     color: "transparent"
 
     readonly property int cols: 3
-    readonly property int colWidth: Theme.s(640)
-    readonly property int keysWidth: Theme.s(280)
+    // Shrink-to-fit: the layout is designed at full size for a big ultrawide;
+    // on smaller (logical) screens everything scales down uniformly so all
+    // three columns fit, whatever the monitor.
+    readonly property real naturalWidth: Theme.s(cols * 640 + 28 * (cols - 1) + 48)
+    readonly property real fit: Math.min(1, (width - Theme.s(40)) / naturalWidth)
+    function z(n) { return Math.round(Theme.s(n) * fit) }
+    readonly property int colWidth: z(640)
+    readonly property int keysWidth: z(280)
 
     onVisibleChanged: if (visible) keys.forceActiveFocus()
 
@@ -117,8 +123,8 @@ Scope {
       Rectangle {
         id: card
         anchors.centerIn: parent
-        width: win.cols * win.colWidth + Theme.s(28) * (win.cols - 1) + Theme.s(48)
-        height: Math.min(parent.height - Theme.s(80), body.implicitHeight + heading.height + Theme.s(70))
+        width: win.cols * win.colWidth + win.z(28) * (win.cols - 1) + win.z(48)
+        height: Math.min(parent.height - win.z(80), body.implicitHeight + heading.height + win.z(70))
         radius: Theme.launcherRadius
         color: Theme.card
         border { width: 1; color: Theme.tint(0.2) }
@@ -126,15 +132,15 @@ Scope {
 
         Text {
           id: heading
-          anchors { top: parent.top; topMargin: Theme.s(20); horizontalCenter: parent.horizontalCenter }
+          anchors { top: parent.top; topMargin: win.z(20); horizontalCenter: parent.horizontalCenter }
           text: "Keybindings"
           color: Theme.fg
-          font { family: Theme.uiFont; pixelSize: Theme.s(30); bold: true }
+          font { family: Theme.uiFont; pixelSize: win.z(30); bold: true }
         }
 
         Flickable {
-          anchors { top: heading.bottom; topMargin: Theme.s(14); left: parent.left; right: parent.right; bottom: parent.bottom; bottomMargin: Theme.s(34) }
-          anchors.margins: Theme.s(24)
+          anchors { top: heading.bottom; topMargin: win.z(14); left: parent.left; right: parent.right; bottom: parent.bottom; bottomMargin: win.z(34) }
+          anchors.margins: win.z(24)
           contentWidth: width
           contentHeight: body.implicitHeight
           clip: true
@@ -142,7 +148,7 @@ Scope {
 
           Row {
             id: body
-            spacing: Theme.s(28)
+            spacing: win.z(28)
 
             Repeater {
               model: root.columns(win.cols)
@@ -150,19 +156,19 @@ Scope {
                 id: col
                 required property var modelData
                 width: win.colWidth
-                spacing: Theme.s(24)
+                spacing: win.z(24)
 
                 Repeater {
                   model: col.modelData
                   delegate: Column {
                     required property var modelData
                     width: col.width
-                    spacing: Theme.s(8)
+                    spacing: win.z(8)
 
                     Text {
                       text: modelData.name
                       color: Theme.accent
-                      font { family: Theme.uiFont; pixelSize: Theme.s(20); bold: true; capitalization: Font.AllUppercase }
+                      font { family: Theme.uiFont; pixelSize: win.z(20); bold: true; capitalization: Font.AllUppercase }
                     }
                     Rectangle { width: parent.width; height: 1; color: Theme.tint(0.15) }
 
@@ -171,20 +177,20 @@ Scope {
                       delegate: Row {
                         required property var modelData
                         width: col.width
-                        spacing: Theme.s(14)
+                        spacing: win.z(14)
 
                         Text {
                           width: win.keysWidth
                           text: root.keysLabel(modelData.keys)
                           color: Theme.fgBright
-                          font { family: Theme.font; pixelSize: Theme.s(24); bold: true }
+                          font { family: Theme.font; pixelSize: win.z(24); bold: true }
                           elide: Text.ElideRight
                         }
                         Text {
-                          width: col.width - win.keysWidth - Theme.s(14)
+                          width: col.width - win.keysWidth - win.z(14)
                           text: modelData.description
                           color: Theme.fgDim
-                          font { family: Theme.uiFont; pixelSize: Theme.s(24) }
+                          font { family: Theme.uiFont; pixelSize: win.z(24) }
                           elide: Text.ElideRight
                         }
                       }
@@ -200,15 +206,15 @@ Scope {
             visible: root.binds.length === 0
             text: "No keybindings found"
             color: Theme.fgDim
-            font { family: Theme.uiFont; pixelSize: Theme.s(15) }
+            font { family: Theme.uiFont; pixelSize: win.z(15) }
           }
         }
 
         Text {
-          anchors { bottom: parent.bottom; bottomMargin: Theme.s(10); horizontalCenter: parent.horizontalCenter }
+          anchors { bottom: parent.bottom; bottomMargin: win.z(10); horizontalCenter: parent.horizontalCenter }
           text: "esc / Super+K close"
           color: Theme.tint(0.5)
-          font { family: Theme.uiFont; pixelSize: Theme.s(11) }
+          font { family: Theme.uiFont; pixelSize: win.z(11) }
         }
       }
     }
