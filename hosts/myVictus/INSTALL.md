@@ -1,5 +1,44 @@
 # Setting up myVictus (HP Victus, Ryzen 7 7535HS + RX 6550M)
 
+## At a glance
+
+The hardware config for this laptop is already committed in this directory
+(`hardware-configuration.nix`, generated 2026-11-05). On the same laptop and
+disk layout you can skip step 3. Start here after installing NixOS:
+
+```sh
+nix-shell -p git gh        # temporary shell with git and gh
+gh auth login              # only needed while the repo is private
+git clone <repo-url> ~/Code/nixconfig
+cd ~/Code/nixconfig
+
+# Only if the disk layout changed or you are setting up a different machine:
+nixos-generate-config --show-hardware-config > hosts/myVictus/hardware-configuration.nix
+git add hosts/myVictus/hardware-configuration.nix   # flakes only see tracked files
+
+exit                       # back to the normal prompt
+sudo nixos-rebuild switch --flake .#myVictus
+```
+
+Notes:
+
+- `gh auth login` works on a bare console. Choose GitHub.com, HTTPS, "Login with
+  a web browser". It prints a code and a URL to open on another device (such as
+  your phone); no browser is needed on the laptop. A public repo needs no login
+  to clone over HTTPS.
+- Stage the hardware file **before** you `exit`: the flake only sees files git
+  tracks, so an unstaged file fails with "path not tracked".
+- Check `stateVersion` (step 4) before the first rebuild.
+- Flakes are not enabled on a fresh install. `nixos-rebuild --flake` normally
+  enables them for that command; if you get an "experimental feature" error,
+  add `--option experimental-features "nix-command flakes"`.
+- If the build complains that `git` is missing, rerun it inside
+  `nix-shell -p git`.
+- The first build is slow: it downloads a lot and pulls the pinned Omarchy
+  source (~210 MB).
+
+The sections below explain each step.
+
 ## 1. Install NixOS
 
 Boot the NixOS graphical or minimal ISO and install to the laptop. Choose UEFI
