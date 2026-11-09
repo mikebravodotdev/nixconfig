@@ -7,6 +7,7 @@
 {
   home.packages = [
     pkgs.git
+    pkgs.gh
     pkgs.curl
     pkgs.wget
     pkgs.go
