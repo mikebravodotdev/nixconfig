@@ -22,7 +22,7 @@ Scope {
   function hide()   { open = false }
   function query(text) { pendingQuery = text; open = true }
 
-  readonly property string terminal: "kitty"
+  readonly property string terminal: "ghostty"
   readonly property string stateDir: (Quickshell.env("XDG_STATE_HOME") || (Quickshell.env("HOME") + "/.local/state")) + "/quickshell"
 
   // ------------------------------------------------------------ usage counts

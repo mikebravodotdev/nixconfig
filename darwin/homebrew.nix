@@ -78,6 +78,7 @@
       # AI
       "google-gemini"
       "grok-bot"
+      "grok-build"
       "claude"
       "claude-code"
       "perplexity"

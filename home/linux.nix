@@ -42,6 +42,9 @@
       # Claude Code CLI.
       pkgs.claude-code
 
+      # xAI Grok coding agent CLI.
+      pkgs.grok-build
+
       # Homebrew brews / CLI casks on macOS
       pkgs.dart
 

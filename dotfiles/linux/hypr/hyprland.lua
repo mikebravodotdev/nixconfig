@@ -5,7 +5,7 @@
 
 -- Shared program choices, read by the modules below.
 programs = {
-  terminal    = "kitty",
+  terminal    = "ghostty",
   browser     = "chromium",
   fileManager = "nautilus",
   menu        = "hyprlauncher",
