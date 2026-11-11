@@ -30,6 +30,7 @@
       "ungoogled-chromium"
 
       # Communication
+      "discord"
       "keybase"
       "element"
       "jami"

@@ -55,6 +55,7 @@
       pkgs.microsoft-edge
 
       # Communication
+      pkgs.discord
       pkgs.element-desktop
       pkgs.jami
       pkgs.signal-desktop
