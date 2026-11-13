@@ -105,6 +105,7 @@
   # layer, not home-manager.
   services.flatpak.enable = true;
   programs.steam.enable = true;
+  programs.gamescope.enable = true;
   hardware.steam-hardware.enable = true;
   programs._1password.enable = true;
   programs._1password-gui = { enable = true; polkitPolicyOwners = [ username ]; };
