@@ -57,6 +57,16 @@ nix.settings = {
     home = "/Users/${username}";
   };
 
+# nix-darwin only applies users.users.<name>.shell to accounts it creates, so
+# set the login shell on the existing account ourselves. Idempotent.
+  system.activationScripts.postActivation.text = ''
+    current="$(dscl . -read /Users/${username} UserShell | awk '{print $2}')"
+    if [ "$current" != "/bin/bash" ]; then
+      echo "setting login shell for ${username} to /bin/bash" >&2
+      dscl . -create /Users/${username} UserShell /bin/bash
+    fi
+  '';
+
 # System settings
   system.configurationRevision = self.rev or self.dirtyRev or null;
   system.stateVersion = 6;

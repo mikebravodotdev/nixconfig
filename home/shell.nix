@@ -36,7 +36,8 @@
     # missing or broken we simply stay in /bin/bash.
     profileExtra = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (lib.mkBefore ''
       if [ "$BASH" = /bin/bash ] && [[ $- == *i* ]] \
-         && [ -x /run/current-system/sw/bin/bash ]; then
+         && [ -x /run/current-system/sw/bin/bash ] \
+         && /run/current-system/sw/bin/bash --norc --noprofile -c 'exit 0' >/dev/null 2>&1; then
         exec /run/current-system/sw/bin/bash -l
       fi
     '');
