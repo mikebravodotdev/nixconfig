@@ -38,6 +38,10 @@ in
       theme = "CanadianShield";
       font-family = "Hack Nerd Font";
       quit-after-last-window-closed = false;
+      cursor-style = "underline";
+      cursor-style-blink = true;
+      # Shell integration otherwise forces a bar cursor at the prompt
+      shell-integration-features = "no-cursor";
     };
     # home-manager's default systemd unit uses Type=notify-reload, and every
     # `home-manager switch` that touches this config fires its
