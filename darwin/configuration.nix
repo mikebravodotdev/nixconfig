@@ -10,8 +10,16 @@
 
 # macOS defaults
   system.defaults = {
-    dock.autohide = true;
-    dock.mru-spaces = false;
+    dock = {
+      autohide = true;
+      autohide-delay = 0.0;
+      autohide-time-modifier = 0.3;
+      mru-spaces = false;
+      show-recents = false;
+      tilesize = 48;
+      orientation = "bottom";
+      minimize-to-application = true;
+    };
     #finder.AppleShowAllExtensions = true;
     finder.FXPreferredViewStyle = "clmv";
     loginwindow.LoginwindowText = "The way is shut. It was made by those who are dead, and the Dead keep it, until the time comes. The way is shut.";
@@ -33,12 +41,19 @@ nix.settings = {
 # Flakes settings
   nix.settings.experimental-features = "nix-command flakes";
 
-# Make Nix's bash the login shell (macOS defaults to zsh). The bash config
-# itself is managed by home-manager — see ../home/shell.nix.
+# Machine name (matches the flake's darwinConfigurations entry).
+  networking.hostName = "Hermes";
+  networking.computerName = "Hermes";
+  networking.localHostName = "Hermes";
+
+# Login shell is the macOS system bash (/bin/bash) so a broken Nix store or
+# activation can never lock us out of a terminal. ~/.bash_profile then execs
+# Nix's newer bash — see ../home/shell.nix. The bash config itself is managed
+# by home-manager.
   environment.shells = [ "/run/current-system/sw/bin/bash" ];
   environment.systemPackages = [ pkgs.bash ];
   users.users.${username} = {
-    shell = pkgs.bash;
+    shell = "/bin/bash";
     home = "/Users/${username}";
   };
 

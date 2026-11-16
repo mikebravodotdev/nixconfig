@@ -75,8 +75,8 @@
         };
       };
 
-      # LSP servers for the toolchains declared in packages.nix (go, rustc,
-      # nodejs, python3, ruby, lua) plus lua/nix for editing this repo itself.
+      # LSP servers. Global runtimes (nodejs, python3, lua) come from packages.nix;
+      # go, rust and ruby toolchains come from each project's devShell (direnv).
       lsp = {
         enable = true;
         servers = {
@@ -89,7 +89,7 @@
           bashls.enable = true;
           rust_analyzer = {
             enable = true;
-            # cargo/rustc are already declared in packages.nix
+            # cargo/rustc come from the project's devShell
             installCargo = false;
             installRustc = false;
           };

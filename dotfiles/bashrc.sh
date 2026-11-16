@@ -90,7 +90,6 @@ ga() {
   local wt_path="../${base}--${branch}"
 
   git worktree add -b "$branch" "$wt_path"
-  command -v mise &> /dev/null && mise trust "$wt_path"
   cd "$wt_path"
 }
 
@@ -232,12 +231,9 @@ alias cy='codex -s danger-full-access -a never'
 alias c='opencode'
 alias d='docker'
 alias r='rails'
-alias mup='MISE_MINIMUM_RELEASE_AGE=0 mise up'
 
-# --- Init: version managers, prompt, directory jumping, fuzzy find ---
-if command -v mise &> /dev/null; then
-  eval "$(mise activate bash)"
-fi
+# --- Init: prompt, directory jumping, fuzzy find ---
+# (Per-project toolchains come from devShells via direnv — see home/shell.nix.)
 
 if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
   eval "$(starship init bash)"

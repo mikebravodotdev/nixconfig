@@ -5,16 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    # Declarative tap management
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
     # Deliberately not following our nixpkgs pin here: home-manager/master's
     # module system has needed nixpkgs internals (e.g. lib/services) that
     # our nixpkgs-unstable pin doesn't have yet. Let it use its own tested pin.
@@ -37,7 +27,7 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask, home-manager, nixvim, cliamp, nix-flatpak, omarchy }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nixvim, cliamp, nix-flatpak, omarchy }:
   let
     username = "mikebravo";
 
@@ -50,10 +40,9 @@
     # given entry below if/when a machine needs to diverge (e.g. a
     # trimmed Homebrew cask list).
     mkDarwinSystem = { system ? "aarch64-darwin" }: nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit (inputs) self homebrew-core homebrew-cask; inherit username; };
+      specialArgs = { inherit (inputs) self; inherit username; };
 
       modules = [
-        nix-homebrew.darwinModules.nix-homebrew # The module itself
         { nixpkgs.hostPlatform = system; }
         ./darwin/configuration.nix
         # ./darwin/NSGlobalDomain.nix # Global configurations
@@ -97,7 +86,6 @@
   {
     darwinConfigurations = {
       "Hermes" = mkDarwinSystem { };
-      "myMacmini" = mkDarwinSystem { };
     };
 
     nixosConfigurations = {

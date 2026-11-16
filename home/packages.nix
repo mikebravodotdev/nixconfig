@@ -10,20 +10,14 @@
     pkgs.gh
     pkgs.curl
     pkgs.wget
-    pkgs.go
-    pkgs.rustc
-    pkgs.jdk
-    pkgs.cargo
     pkgs.fish
     pkgs.nodejs
-    pkgs.dotnet-sdk
     pkgs.starship
     pkgs.eza
     pkgs.powershell
 
     pkgs.nano
     pkgs.python3
-    pkgs.ruby
     pkgs.sqlite
     pkgs.lua
 
@@ -31,7 +25,6 @@
     pkgs.zoxide
     pkgs.fzf
     pkgs.bat
-    pkgs.mise
     pkgs.gum
     pkgs.tmux
 

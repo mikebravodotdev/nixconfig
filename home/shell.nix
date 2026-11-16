@@ -31,7 +31,23 @@
       export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
     '';
 
+    # macOS: the login shell is the system /bin/bash (a recovery guarantee).
+    # Hop into Nix's bash for interactive sessions when it exists; if it's
+    # missing or broken we simply stay in /bin/bash.
+    profileExtra = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (lib.mkBefore ''
+      if [ "$BASH" = /bin/bash ] && [[ $- == *i* ]] \
+         && [ -x /run/current-system/sw/bin/bash ]; then
+        exec /run/current-system/sw/bin/bash -l
+      fi
+    '');
+
     initExtra = builtins.readFile ../dotfiles/bashrc.sh;
+  };
+
+  # Per-project toolchains: `use flake` in a project's .envrc loads its devShell.
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   # Starship reads ~/.config/starship.toml by default.
