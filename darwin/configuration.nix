@@ -21,7 +21,34 @@
       minimize-to-application = true;
     };
     #finder.AppleShowAllExtensions = true;
-    finder.FXPreferredViewStyle = "clmv";
+    finder = {
+      FXPreferredViewStyle = "Nlsv"; # list view: the only view with columns
+      ShowPathbar = true;
+      ShowStatusBar = true;
+    };
+    # "Use as Defaults" list-view options (columns, Calculate All Sizes). Only
+    # folders without their own .DS_Store view settings pick these up.
+    CustomUserPreferences."com.apple.finder".FK_StandardViewSettings.ListViewSettings = {
+      calculateAllSizes = true;
+      sortColumn = "name";
+      iconSize = 16;
+      textSize = 12;
+      showIconPreview = true;
+      useRelativeDates = true;
+      viewOptionsVersion = 1;
+      columns = {
+        name         = { identifier = "name";         ascending = true;  index = 0; visible = true; width = 300; };
+        dateModified = { identifier = "dateModified"; ascending = false; index = 1; visible = true; width = 181; };
+        dateCreated  = { identifier = "dateCreated";  ascending = false; index = 2; visible = true; width = 181; };
+        dateLastOpened = { identifier = "dateLastOpened"; ascending = false; index = 3; visible = true; width = 181; };
+        dateAdded    = { identifier = "dateAdded";    ascending = false; index = 4; visible = true; width = 181; };
+        size         = { identifier = "size";         ascending = false; index = 5; visible = true; width = 97; };
+        kind         = { identifier = "kind";         ascending = true;  index = 6; visible = true; width = 115; };
+        label        = { identifier = "label";        ascending = true;  index = 7; visible = false; width = 100; };
+        version      = { identifier = "version";      ascending = true;  index = 8; visible = false; width = 75; };
+        comments     = { identifier = "comments";     ascending = true;  index = 9; visible = false; width = 300; };
+      };
+    };
     loginwindow.LoginwindowText = "The way is shut. It was made by those who are dead, and the Dead keep it, until the time comes. The way is shut.";
     screencapture.location = "/Users/${username}/Library/Mobile\ Documents/com~apple~CloudDocs/Screenshots";
     screensaver.askForPasswordDelay = 10;
@@ -65,6 +92,8 @@ nix.settings = {
       echo "setting login shell for ${username} to /bin/bash" >&2
       dscl . -create /Users/${username} UserShell /bin/bash
     fi
+    # Finder only reads its view defaults at launch
+    killall Finder 2>/dev/null || true
   '';
 
 # System settings
