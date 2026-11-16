@@ -101,6 +101,11 @@
   hardware.bluetooth.enable = true;
   services.upower.enable = true;
 
+  # Removable drive automounting: Nautilus mounts USB drives through
+  # udisks2 + gvfs, and neither is pulled in by Hyprland.
+  services.udisks2.enable = true;
+  services.gvfs.enable = true;
+
   # System-level installs: browser integration, polkit and FUSE need this
   # layer, not home-manager.
   services.flatpak.enable = true;
