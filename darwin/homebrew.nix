@@ -97,6 +97,10 @@
       # "proton-mail-bridge"
       # "proton-pass"
       # "protonvpn"
+      
+      # Entertainment
+      "steam"
+      "battle-net"
 
       # Fonts
       "font-fira-code"
