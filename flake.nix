@@ -86,6 +86,7 @@
   {
     darwinConfigurations = {
       "Hermes" = mkDarwinSystem { };
+      "Atlas" = mkDarwinSystem { };
     };
 
     nixosConfigurations = {
