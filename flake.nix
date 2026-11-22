@@ -36,11 +36,12 @@
 
     # macOS: nix-darwin owns the system layer (defaults, Homebrew, Touch ID)
     # and runs home-manager as a module for everything user-level.
-    # Same config for every Mac right now — add per-host modules to a
-    # given entry below if/when a machine needs to diverge (e.g. a
+    # Same config for every Mac apart from the hostname, which is passed in
+    # per entry below and used by darwin/configuration.nix. Add per-host
+    # modules to a given entry if/when a machine needs to diverge (e.g. a
     # trimmed Homebrew cask list).
-    mkDarwinSystem = { system ? "aarch64-darwin" }: nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit (inputs) self; inherit username; };
+    mkDarwinSystem = { hostname, system ? "aarch64-darwin" }: nix-darwin.lib.darwinSystem {
+      specialArgs = { inherit (inputs) self; inherit username hostname; };
 
       modules = [
         { nixpkgs.hostPlatform = system; }
@@ -85,8 +86,8 @@
   in
   {
     darwinConfigurations = {
-      "Hermes" = mkDarwinSystem { };
-      "Atlas" = mkDarwinSystem { };
+      "Hermes" = mkDarwinSystem { hostname = "Hermes"; };
+      "Atlas" = mkDarwinSystem { hostname = "Atlas"; };
     };
 
     nixosConfigurations = {

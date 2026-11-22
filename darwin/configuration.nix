@@ -2,7 +2,7 @@
 # macOS system layer (nix-darwin). Everything user-level and cross-platform
 # — packages, shell, editor, dotfiles — lives in ../home instead.
 
-{ self, pkgs, username, ... }:
+{ self, pkgs, username, hostname, ... }:
 
 {
 # Allow installation of unfree packages
@@ -68,10 +68,12 @@ nix.settings = {
 # Flakes settings
   nix.settings.experimental-features = "nix-command flakes";
 
-# Machine name (matches the flake's darwinConfigurations entry).
-  networking.hostName = "Hermes";
-  networking.computerName = "Hermes";
-  networking.localHostName = "Hermes";
+# Machine name, passed in per host by the flake's mkDarwinSystem (matches the
+# darwinConfigurations entry, so `darwin-rebuild switch --flake .#<name>`
+# never renames a Mac).
+  networking.hostName = hostname;
+  networking.computerName = hostname;
+  networking.localHostName = hostname;
 
 # Login shell is the macOS system bash (/bin/bash) so a broken Nix store or
 # activation can never lock us out of a terminal. ~/.bash_profile then execs
