@@ -57,7 +57,8 @@
       "coderunner"
 
       # Productivity
-      "audacity"
+      # "audacity"
+      "audacity@3"
       "libreoffice"
       "logseq"
       "obs"
