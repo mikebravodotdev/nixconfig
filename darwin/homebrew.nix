@@ -103,6 +103,7 @@
       
       # Entertainment
       "steam"
+      "battle-net"
 
       # Fonts
       "font-fira-code"
