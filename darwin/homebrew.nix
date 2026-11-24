@@ -1,7 +1,7 @@
 # darwin/homebrew.nix
 # macOS-only. Linux equivalents of these casks live in ../home/linux.nix
 # (nixpkgs) and ../home/appimages where a Linux build exists.
-{ username, ... }:
+{ lib, username, hostname, ... }:
 
 {
   homebrew = {
@@ -101,15 +101,16 @@
       # "proton-pass"
       # "protonvpn"
       
-      # Entertainment
-      "steam"
-      "battle-net"
-
       # Fonts
       "font-fira-code"
       "font-fira-code-nerd-font"
       "font-hack"
       "font-hack-nerd-font"
+    ]
+    # Gaming: Atlas only
+    ++ lib.optionals (hostname == "Atlas") [
+      "steam"
+      "battle-net"
     ];
   };
 }
