@@ -28,6 +28,7 @@
       "brave-browser"
       "microsoft-edge"
       "ungoogled-chromium"
+      "helium-browser"
 
       # Communication
       "discord"
