@@ -58,6 +58,7 @@
 
       # Productivity
       # "audacity"
+      "screenflow"
       "audacity@3"
       "libreoffice"
       "logseq"
@@ -101,7 +102,6 @@
       
       # Entertainment
       "steam"
-      "battle-net"
 
       # Fonts
       "font-fira-code"
