@@ -56,6 +56,7 @@
       # "wezterm"
       "zed"
       "coderunner"
+      "cursor"
 
       # Productivity
       # "audacity"
