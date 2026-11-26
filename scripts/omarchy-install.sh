@@ -102,7 +102,20 @@ install_packages() {
     say "Installing ${#missing[@]} packages: ${missing[*]}"
     # --needed: skip up-to-date; --noconfirm would hide AUR PKGBUILD review,
     # so prompts are left on.
-    run yay -S --needed "${missing[@]}"
+    run yay -S --needed "${missing[@]}" || true   # verified below, whatever yay returns
+
+    # yay can exit 0 after a failed download (e.g. a mirror glitch), so check.
+    if [ $dry -eq 0 ]; then
+      local failed=()
+      for p in "${missing[@]}"; do
+        pacman -Qq "$p" >/dev/null 2>&1 || failed+=("$p")
+      done
+      if [ ${#failed[@]} -gt 0 ]; then
+        echo "NOT INSTALLED: ${failed[*]}" >&2
+        echo "Re-run the script (it skips what is installed); mirror errors are often transient." >&2
+        exit 1
+      fi
+    fi
   fi
 
   if [ ${#skipped[@]} -gt 0 ]; then
