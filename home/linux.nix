@@ -67,6 +67,7 @@
 
       # Development
       pkgs.podman-desktop
+      pkgs.code-cursor
       pkgs.vscode
       pkgs.zed-editor
 
