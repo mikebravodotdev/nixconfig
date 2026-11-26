@@ -80,6 +80,9 @@ add visual-studio-code-bin
 [ $slow -eq 1 ] && add podman-desktop-git \
   || skipped+=("podman-desktop-git — source build is slow; pass --slow")
 
+# Gaming (home/linux.nix Flatpaks, installed natively). Steam is already native.
+add lutris protonplus
+
 # Former AppImages, now repo/AUR packages. Already native: obsidian.
 add audacity lmstudio-bin logseq-desktop-bin
 x86 onlyoffice-bin                  "no aarch64 build"
