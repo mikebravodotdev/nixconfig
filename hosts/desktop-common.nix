@@ -116,4 +116,11 @@
   programs._1password-gui = { enable = true; polkitPolicyOwners = [ username ]; };
   virtualisation.podman.enable = true;
   services.keybase.enable = true;
+
+  # Local LLM server (macOS: the ollama-app cask). Every host here is AMD,
+  # so use the ROCm build; API listens on localhost:11434.
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-rocm;
+  };
 }
