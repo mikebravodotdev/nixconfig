@@ -109,7 +109,7 @@
       "font-hack-nerd-font"
     ]
     # Gaming: Atlas only
-    ++ lib.optionals (hostname == "Atlas") [
+    ++ lib.optionals (hostname == "Hermes") [
       "steam"
       "battle-net"
     ];
